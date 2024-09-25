@@ -1,2 +1,3 @@
-# gestao-turmas
-Projeto full-stack para gestão de alunos e turmas.
+# Teste Full-Stack DTI
+
+Desenvolvido por Victor Martins.

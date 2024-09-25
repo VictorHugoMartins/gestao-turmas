@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "studentId": 1,
+    "classroomId": 1,
+    "grade": 8.5,
+    "frequency": 90
+  },
+  {
+    "id": 2,
+    "studentId": 1,
+    "classroomId": 2,
+    "grade": 8,
+    "frequency": 89
+  },
+  {
+    "id": 3,
+    "studentId": 2,
+    "classroomId": 1,
+    "grade": 9,
+    "frequency": 95
+  },
+  {
+    "id": 4,
+    "studentId": 2,
+    "classroomId": 2,
+    "grade": 3,
+    "frequency": 4
+  },
+  {
+    "id": 5,
+    "studentId": 3,
+    "classroomId": 1,
+    "grade": 6.5,
+    "frequency": 80
+  },
+  {
+    "id": 6,
+    "studentId": 3,
+    "classroomId": 3,
+    "grade": 7.5,
+    "frequency": 75
+  },
+  {
+    "id": 7,
+    "studentId": 1,
+    "classroomId": 3,
+    "grade": 8,
+    "frequency": 92
+  },
+  {
+    "id": 8,
+    "studentId": 2,
+    "classroomId": 3,
+    "grade": 9.5,
+    "frequency": 96
+  },
+  {
+    "id": 9,
+    "studentId": 1,
+    "classroomId": 7,
+    "grade": 9,
+    "frequency": 80
+  }
+]

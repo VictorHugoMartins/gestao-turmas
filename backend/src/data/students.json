@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "name": "João Silva",
+    "image_url": "https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg"
+  },
+  {
+    "id": 2,
+    "name": "Maria Oliveira",
+    "image_url": "https://cdn2.iconfinder.com/data/icons/circle-avatars-1/128/050_girl_avatar_profile_woman_suit_student_officer-512.png"
+  },
+  {
+    "id": 3,
+    "name": "Alexandra Santos",
+    "image_url": "https://w7.pngwing.com/pngs/4/736/png-transparent-female-avatar-girl-face-woman-user-flat-classy-users-icon.png"
+  },
+  {
+    "id": 4,
+    "name": "Victor Hugo",
+    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9UdkG68P9AHESMfKJ-2Ybi9pfnqX1tqx3wQ&s"
+  },
+  {
+    "id": 5,
+    "name": "Luiz Henrique",
+    "image_url": "https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?size=338&ext=jpg&ga=GA1.1.1819120589.1727222400&semt=ais_hybrid"
+  }
+]
