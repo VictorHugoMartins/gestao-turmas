@@ -1,58 +1,30 @@
-import React, { useState } from 'react';
-import { Typography, Button, Modal, Box, Container, Grid, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Typography, Box, Container, Grid } from '@mui/material';
 import StatisticCards from '../components/Structure/StatisticsCards';
-import { Student } from '../types';
-import { useClassRoom } from '../contexts/ClassroomContext';
+import ClassroomList from '../components/List/ClassroomList';
+import NewClassModal from '../components/ModalForm/NewClassModal';
+import NewStudentModal from '../components/ModalForm/NewStudentModal';
+import Header from '../components/Structure/Header/Header';
 import { useStudent } from '../contexts/StudentContext';
-import ClassRoomList from '../components/List/ClassRoomList';
-import NewClassModal from '../components/Modal/NewClassModal';
-import NewStudentModal from '../components/Modal/NewStudentModal';
+import { useClassroom } from '../contexts/ClassroomContext';
 
 const Homepage: React.FC = () => {
-    const { criarStudent } = useStudent();
-    const { criarClassRoom } = useClassRoom();
+    const { students } = useStudent();
+    const { classrooms } = useClassroom();
+    const [reload, setReload] = useState<boolean>(false);
 
-    const [openClassRoomModal, setOpenClassRoomModal] = useState(false);
-    const [openStudentModal, setOpenStudentModal] = useState(false);
-    const [novoStudent, setNovoStudent] = useState<Student>({ id: 0, image_url: '', name: '' });
-    const [novaClassRoom, setNovaClassRoom] = useState<{ id: number; name: string }>({ id: 0, name: '' });
-
-    const handleOpenClassRoomModal = () => setOpenClassRoomModal(true);
-    const handleCloseClassRoomModal = () => {
-        setOpenClassRoomModal(false);
-        setNovaClassRoom({ id: 0, name: '' });
-    };
-
-    const handleOpenStudentModal = () => setOpenStudentModal(true);
-    const handleCloseStudentModal = () => {
-        setOpenStudentModal(false);
-        setNovoStudent({ id: 0, image_url: '', name: '' });
-    };
-
-    const handleSubmitNovoStudent = async () => {
-        await criarStudent(novoStudent);
-        handleCloseStudentModal();
-    };
-
-    const handleSubmitNovaClassRoom = async () => {
-        await criarClassRoom(novaClassRoom.name); // Assumindo que você tenha uma função criarClassRoom no contexto
-        handleCloseClassRoomModal();
-    };
+    useEffect(() => {
+        setReload(true);
+    }, [students, classrooms]);
 
     return (
-        <>
-            {/* Header */}
-            <Container component="header" sx={{ bgcolor: '#7a7abc', color: '#F0F0F0', p: 2, borderRadius: 2, mb: 4 }}>
-                <Typography variant="h5" gutterBottom>
-                    Bem-vindo, Professor Carlos! Use esta plataforma para gerenciar suas classrooms e students.
-                </Typography>
-                <Typography variant="body1">
-                    Além de lançar notas e presenças, você também pode incluir novos students ou classrooms.
-                </Typography>
-            </Container>
+        <Container sx={{ p: 2 }} maxWidth={false}>
+            <Header />
 
-            {/* Resumo Geral das ClassRooms */}
-            <Container id='resumo' sx={{ mb: 4 }}>
+            <Container 
+                sx={{ mb: 4, p: 2, width: { lg: '90%', xs: '100%' } }} 
+                maxWidth={false}
+            >
                 <Box sx={{ mb: 2 }}>
                     <Typography variant="h4" gutterBottom>
                         Resumo Geral das Turmas
@@ -66,13 +38,16 @@ const Homepage: React.FC = () => {
                         </Grid>
                     </Grid>
                 </Box>
-                <StatisticCards />
+                <StatisticCards reload={reload} />
             </Container>
 
-            <Container id="lista-classrooms">
-                <ClassRoomList />
+            <Container 
+                sx={{ p: 2, width: { lg: '90%', xs: '100%' } }} 
+                maxWidth={false}
+            >
+                <ClassroomList />
             </Container>
-        </>
+        </Container>
     );
 };
 

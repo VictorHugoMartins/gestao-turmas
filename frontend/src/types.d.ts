@@ -2,6 +2,7 @@ export interface Student {
     id?: number;
     image_url: string;
     name: string;
+    frequency?: number;
 }
 
 export interface Classroom {
@@ -9,13 +10,13 @@ export interface Classroom {
     name: string;
 }
 
-export interface Nota {
+export interface StudentView {
     id?: number;
     studentId: number;
     classroomId: number;
     classroomName: string;
     name: string;
     grade: number;
-    frequency: number;
     image_url: string;
+    frequency: number;
 }

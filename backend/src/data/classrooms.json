@@ -1,5 +1,9 @@
 [
   {
+    "id": 1,
+    "name": "Turma A"
+  },
+  {
     "id": 2,
     "name": "Turma B"
   },
@@ -13,10 +17,6 @@
   },
   {
     "id": 5,
-    "name": "Turma E"
-  },
-  {
-    "id": 6,
-    "name": "TURMA A"
+    "name": "Turma Z"
   }
 ]

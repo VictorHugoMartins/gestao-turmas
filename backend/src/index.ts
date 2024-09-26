@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
 import * as studentController from './controllers/studentController';
 import * as classroomController from './controllers/classroomController';
@@ -14,24 +14,22 @@ app.use(cors({
 app.use(express.json());
 
 // Rotas de students
-app.post('/api/students', studentController.createStudent);
-app.put('/api/students/:studentId', studentController.updateStudent);
-app.delete('/api/students/:studentId', studentController.deleteStudent);
-app.get('/api/classrooms/:classroomId/ListarStudents', studentController.listarStudents);
-app.get('/api/students/ListarMediaGradedStudentsFrequency', studentController.listStudentsMedias);
+app.post('/api/students', studentController.createStudent); // ok
+app.put('/api/students/:studentId', studentController.updateStudent); // ok
+app.delete('/api/students/:studentId', studentController.deleteStudent); // ok
+app.get('/api/classrooms/:classroomId/ListarStudents', studentController.listarStudents); // ok
+app.get('/api/students/ListarMediaStudentViewsFrequency', studentController.listStudentsMedias); // ok
 
 // Rotas de classrooms
-app.post('/api/classrooms', classroomController.createClassroom);
-app.put('/api/classrooms/:classroomId', classroomController.updateClassroom);
-app.delete('/api/classrooms/:classroomId', classroomController.deleteClassroom);
-app.get('/api/classrooms/ListarClassrooms', classroomController.listClassrooms);
+app.post('/api/classrooms', classroomController.createClassroom); // ok
+app.put('/api/classrooms/:classroomId', classroomController.updateClassroom); // ok
+app.delete('/api/classrooms/:classroomId', classroomController.deleteClassroom); // ok
+app.get('/api/classrooms/ListarClassrooms', classroomController.listClassrooms); // ok
 
 // Rotas de grades
-app.post('/api/classrooms/:classroomId/students/:studentId/grades', gradeController.createOrUpdateGradedStudent);
-app.get('/api/classrooms/:classroomId/students/:studentId/grades', gradeController.getGradedStudentsByStudentAndClassroom);
-app.get('/api/classrooms/statistics', gradeController.getStatisticsByClassroom);
+app.get('/api/grades/statistics', gradeController.getStatisticsByClassroom); // ok
+app.put('/api/grades/:classroomId/students/:studentId', gradeController.updateGradedStudent); // ok
 
-// Iniciar o servidor
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });

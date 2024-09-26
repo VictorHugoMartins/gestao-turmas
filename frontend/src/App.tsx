@@ -2,10 +2,12 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { ClassRoomProvider } from './contexts/ClassroomContext';
+import { ClassroomProvider } from './contexts/ClassroomContext';
 import { StudentProvider } from './contexts/StudentContext';
 import { StatisticsProvider } from './contexts/StatisticsContext';
-import { GradedStudentProvider } from './contexts/GradedStudent';
+import { StudentViewProvider } from './contexts/StudentViewContext';
+
+import './App.css';
 
 const theme = createTheme({
   palette: {
@@ -29,17 +31,17 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <StatisticsProvider>
-        <ClassRoomProvider>
+        <ClassroomProvider>
           <StudentProvider>
-            <GradedStudentProvider>
+            <StudentViewProvider>
               <Router>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                 </Routes>
               </Router>
-            </GradedStudentProvider>
+            </StudentViewProvider>
           </StudentProvider>
-        </ClassRoomProvider>
+        </ClassroomProvider>
       </StatisticsProvider>
     </ThemeProvider>
   );

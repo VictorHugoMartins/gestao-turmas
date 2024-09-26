@@ -2,81 +2,91 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Classroom } from '../types';
 
-interface ClassRoomContextProps {
+interface ClassroomContextProps {
     classrooms: Classroom[];
-    criarClassRoom: (name: string) => Promise<void>;
-    editarClassRoom: (id: number, name: string) => Promise<void>;
-    removerClassRoom: (id: number) => Promise<void>;
-    buscarClassRooms: () => Promise<void>;
+    criarClassroom: (name: string) => Promise<void>;
+    editarClassroom: (id: number, name: string) => Promise<void>;
+    removerClassroom: (id: number) => Promise<void>;
+    buscarClassrooms: () => Promise<void>;
 }
 
-const ClassRoomContext = createContext<ClassRoomContextProps | undefined>(undefined);
+const ClassroomContext = createContext<ClassroomContextProps | undefined>(undefined);
 
-export const useClassRoom = () => {
-    const context = useContext(ClassRoomContext);
+export const useClassroom = () => {
+    const context = useContext(ClassroomContext);
     if (!context) {
-        throw new Error('useClassRoom must be used within a ClassRoomProvider');
+        throw new Error('useClassroom must be used within a ClassroomProvider');
     }
     return context;
 };
 
-export const ClassRoomProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [classrooms, setClassRooms] = useState<Classroom[]>([]);
+export const ClassroomProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [classrooms, setClassrooms] = useState<Classroom[]>([]);
 
-    const buscarClassRooms = async () => {
+    const buscarClassrooms = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/classrooms/ListarClassRooms');
+            const response = await axios.get(`http://localhost:5000/api/classrooms/ListarClassrooms`);
             if (Array.isArray(response.data?.data)) {
-                setClassRooms(response.data.data);
+                setClassrooms(response.data.data);
             } else {
-                console.warn('Formato de resposta inesperado ao buscar classrooms:', response.data);
-                setClassRooms([]);
+                alert('Formato de resposta inesperado ao buscar turmas:');
+                setClassrooms([]);
             }
         } catch (error) {
-            console.error('Erro ao buscar classrooms:', error);
-            setClassRooms([]);
+            alert('Erro ao buscar turmas:');
+            setClassrooms([]);
         }
     };
 
-    const criarClassRoom = async (name: string) => {
+    const criarClassroom = async (name: string) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/classrooms', { name });
-            setClassRooms((prev) => [...prev, response.data]);
-            console.log('Classroom criada com sucesso!', response.data);
+            const response = await axios.post(`http://localhost:5000/api/classrooms`, { name });
+            if (response) {
+                if (window.confirm("Turma criada com sucesso!")) {
+                    buscarClassrooms();
+                    window.location.reload();
+                }
+            }
         } catch (error) {
-            console.error('Erro ao criar classroom:', error);
+            alert('Erro ao criar turma:');
         }
     };
 
-    const editarClassRoom = async (id: number, name: string) => {
+    const editarClassroom = async (id: number, name: string) => {
         try {
             const response = await axios.put(`http://localhost:5000/api/classrooms/${id}`, { name });
-            setClassRooms((prev) =>
-                prev.map((classroom) => (classroom.id === id ? response.data : classroom))
-            );
-            console.log('Classroom atualizada com sucesso!', response.data);
+            if (response) {
+                setClassrooms((prev) =>
+                    prev.map((classroom) => (classroom.id === id ? response.data : classroom))
+                );
+                if (window.confirm("Turma atualizada com sucesso!")) {
+                    buscarClassrooms();
+                    window.location.reload();
+                }
+            }
         } catch (error) {
-            console.error('Erro ao editar classroom:', error);
+            alert('Erro ao editar turma:');
         }
     };
 
-    const removerClassRoom = async (id: number) => {
+    const removerClassroom = async (id: number) => {
         try {
             await axios.delete(`http://localhost:5000/api/classrooms/${id}`);
-            setClassRooms((prev) => prev.filter((classroom) => classroom.id !== id));
-            console.log('Classroom removida com sucesso!');
+            setClassrooms((prev) => prev.filter((classroom) => classroom.id !== id));
+            alert('Turma removida com sucesso!');
+            buscarClassrooms();
         } catch (error) {
-            console.error('Erro ao remover classroom:', error);
+            alert('Erro ao remover turma:');
         }
     };
 
     useEffect(() => {
-        buscarClassRooms();
+        buscarClassrooms();
     }, []);
 
     return (
-        <ClassRoomContext.Provider value={{ classrooms, criarClassRoom, editarClassRoom, removerClassRoom, buscarClassRooms }}>
+        <ClassroomContext.Provider value={{ classrooms, criarClassroom, editarClassroom, removerClassroom, buscarClassrooms }}>
             {children}
-        </ClassRoomContext.Provider>
+        </ClassroomContext.Provider>
     );
 };

@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useState } from 'react';
 import axios from 'axios';
-import { Student } from '../types';
+import { Student, StudentView } from '../types';
 
 interface StudentContextProps {
     students: Student[];
     buscarStudents: (classroomId: number) => void;
-    criarStudent: (student: Student) => void;
-    editarStudent: (student: Student) => void;
-    removerStudent: (id: number) => void;
+    editarStudent: (id: number, student: Student) => void;
+    editarStudentGrade: (grade: StudentView, classroomId: number, notaValue: number) => void;
+    removerStudent: (id: number, classroomId: number) => void;
 }
 
 const StudentContext = createContext<StudentContextProps | undefined>(undefined);
@@ -27,7 +27,7 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         try {
             let response;
             if (classroomId === -1) {
-                response = await axios.get(`http://localhost:5000/api/students/ListarMediaGradedStudentsFrequency`);
+                response = await axios.get(`http://localhost:5000/api/students/ListarMediaStudentViewsFrequency`);
             } else {
                 response = await axios.get(`http://localhost:5000/api/classrooms/${classroomId}/ListarStudents`);
             }
@@ -35,57 +35,62 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
             if (response.data && response.data.data) {
                 setStudents(response.data.data);
             } else {
-                console.warn('Formato de resposta inesperado ao buscar students:', response.data);
+                alert('Formato de resposta inesperado ao buscar alunos');
             }
         } catch (error) {
-            console.error('Erro ao buscar students:', error);
+            alert('Erro ao buscar alunos');
         }
     };
 
-    const criarStudent = async (student: Student) => {
+    const editarStudent = async (id: number, student: Student) => {
         try {
-            const response = await axios.post(`http://localhost:5000/api/students`, student);
-            if (response.data && response.data.data) {
-                setStudents((prev) => [...prev, response.data.data]);
-            } else {
-                console.warn('Formato de resposta inesperado ao criar student:', response.data);
-            }
-        } catch (error) {
-            console.error('Erro ao criar student:', error);
-        }
-    };
-
-    const editarStudent = async (student: Student) => {
-        try {
-            console.log(student);
-            const response = await axios.put(`http://localhost:5000/api/students/${student.id}`, student);
+            const response = await axios.put(`http://localhost:5000/api/students/${id}`, student);
             if (response.data && response.data.data) {
                 setStudents((prev) =>
                     prev.map((a) => (a.id === student.id ? response.data.data : a))
                 );
+                await buscarStudents(-1);
             } else {
-                console.warn('Formato de resposta inesperado ao editar student:', response.data);
+                alert('Formato de resposta inesperado ao editar aluno');
             }
         } catch (error) {
-            console.error('Erro ao editar student:', error);
+            alert('Erro ao editar aluno');
         }
     };
 
-    const removerStudent = async (id: number) => {
+    const editarStudentGrade = async (grade: StudentView, classroomId: number, notaValue: number) => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/students/DeletarStudent/${id}`);
-            if (response.data && response.data.data) {
-                setStudents((prev) => prev.filter((student) => student.id !== id));
-            } else {
-                console.warn('Formato de resposta inesperado ao remover student:', response.data);
+            const response = await axios.put(`http://localhost:5000/api/grades/${grade.classroomId}/students/${grade.studentId}`, {
+                classroomId,
+                studentId: grade.studentId,
+                grade: notaValue
+            });
+            if (response) {
+                if (window.confirm("Turma atualizada com sucesso!")) {
+                    await buscarStudents(classroomId);
+                    window.location.reload();
+                }
             }
         } catch (error) {
-            console.error('Erro ao remover student:', error);
+            alert("Erro ao atualizar notas.");
+        }
+    };
+
+    const removerStudent = async (id: number, classroomId: number) => {
+        try {
+            const response = await axios.delete(`http://localhost:5000/api/students/${id}`);
+            if (response.data && response.data.data) {
+                await buscarStudents(classroomId);
+            } else {
+                alert('Formato de resposta inesperado ao remover aluno');
+            }
+        } catch (error) {
+            alert('Erro ao remover aluno');
         }
     };
 
     return (
-        <StudentContext.Provider value={{ students, buscarStudents, criarStudent, editarStudent, removerStudent }}>
+        <StudentContext.Provider value={{ students, buscarStudents, editarStudent, editarStudentGrade, removerStudent }}>
             {children}
         </StudentContext.Provider>
     );

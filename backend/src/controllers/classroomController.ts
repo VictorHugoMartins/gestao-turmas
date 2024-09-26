@@ -7,7 +7,7 @@ const createClassroom = (req: Request, res: Response) => {
     const classrooms: Classroom[] = getClassrooms();
     const { name } = req.body;
 
-    const classroomExistente = classrooms.find(classroom => classroom.name === name);
+    const classroomExistente = classrooms?.find(classroom => classroom.name === name);
     if (classroomExistente) {
         return res.status(400).json({ message: "Erro: Turma já existe." });
     }
@@ -28,7 +28,7 @@ const updateClassroom = (req: Request, res: Response) => {
     const classroomId = parseInt(req.params.classroomId);
     const { name } = req.body;
 
-    const classroom = classrooms.find(t => t.id === classroomId);
+    const classroom = classrooms?.find(t => t.id === classroomId);
     if (!classroom) {
         return res.status(404).json({ message: "Erro: Turma não encontrada." });
     }
@@ -44,7 +44,7 @@ const deleteClassroom = (req: Request, res: Response) => {
     const classrooms: Classroom[] = getClassrooms();
     const classroomId = parseInt(req.params.classroomId);
 
-    const classroomIndex = classrooms.findIndex(t => t.id === classroomId);
+    const classroomIndex = classrooms?.findIndex(t => t.id === classroomId);
     if (classroomIndex === -1) {
         return res.status(404).json({ message: "Erro: Turma não encontrada." });
     }

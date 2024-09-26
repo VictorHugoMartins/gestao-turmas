@@ -1,88 +1,23 @@
 import React, { useState } from "react";
-import { useClassRoom } from "../../contexts/ClassroomContext";
+import { useClassroom } from "../../contexts/ClassroomContext";
 import {
     Tabs,
     Tab,
     Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    TextField,
-    Typography,
-    IconButton,
-    Menu,
-    MenuItem,
-    ListItemIcon,
+    Typography
 } from "@mui/material";
-import SettingsIcon from '@mui/icons-material/Settings';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useStatistics } from "../../contexts/StatisticsContext";
-import GradedStudentList from "./GradedStudentList";
+import StudentViewList from "./StudentViewList";
+import ClassroomMenuModal from "../ModalForm/ClassroomMenuModal";
 
-interface ClassRoomListProps { }
+interface ClassroomListProps { }
 
-const ClassRoomList: React.FC<ClassRoomListProps> = () => {
-    const { classrooms, criarClassRoom, editarClassRoom, removerClassRoom } = useClassRoom();
+const ClassroomList: React.FC<ClassroomListProps> = () => {
+    const { classrooms } = useClassroom();
     const { values } = useStatistics();
-    const [novaClassRoom, setNovaClassRoom] = useState<string>("");
     const [activeTab, setActiveTab] = useState<number>(0);
-    const [openModal, setOpenModal] = useState<boolean>(false);
-    const [editMode, setEditMode] = useState<boolean>(false);
-    const [classroomEdit, setClassRoomEdit] = useState<number | null>(null);
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-    const handleOpenModal = () => setOpenModal(true);
-
-    const handleCloseModal = () => {
-        setOpenModal(false);
-        setEditMode(false);
-        setClassRoomEdit(null);
-        setNovaClassRoom("");
-    };
-
     const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
         setActiveTab(newValue);
-    };
-
-    const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>, classroomId: number) => {
-        setAnchorEl(event.currentTarget);
-        setClassRoomEdit(classroomId);
-    };
-
-    const handleCloseMenu = () => {
-        setAnchorEl(null);
-    };
-
-    const handleEditClassRoom = () => {
-        const classroom = classrooms.find(t => t.id === classroomEdit);
-        if (classroom) {
-            setNovaClassRoom(classroom.name);
-            setEditMode(true);
-            setOpenModal(true);
-        }
-        handleCloseMenu();
-    };
-
-    const handleDeleteClassRoom = () => {
-        if (classroomEdit) {
-            removerClassRoom(classroomEdit);
-            if (activeTab === classrooms.length - 1) {
-                setActiveTab(activeTab - 1);
-            }
-        }
-        handleCloseMenu();
-    };
-
-    const handleSubmit = () => {
-        if (editMode && classroomEdit) {
-            editarClassRoom(classroomEdit, novaClassRoom);
-        } else {
-            criarClassRoom(novaClassRoom);
-        }
-        handleCloseModal();
     };
 
     return (
@@ -90,6 +25,10 @@ const ClassRoomList: React.FC<ClassRoomListProps> = () => {
             <Typography variant="h4" gutterBottom className="classroom-list-title">
                 Turmas
             </Typography>
+
+            <p>
+                Abaixo você pode ver todos os seus alunos. Na <strong>primeira aba</strong>, você consegue ver todos os seus alunos e suas médias gerais dentro de <strong>todas as turmas</strong>. Nesta aba, você também pode <strong>editar os dados pessoas</strong> desses alunos. Nas demais abas, você pode ver <strong>as notas dos alunos por turma</strong>. Estão destacadas em <strong style={{ color: "#43d669" }}> verde</strong> aquelas notas <strong style={{ color: "#43d669" }}> maiores que a média da turma</strong> e em <strong style={{ color: "orange" }}>laranja</strong> as <strong style={{ color: "orange" }}>frequências menores que 75%</strong>.
+            </p>
 
             <Tabs
                 value={activeTab}
@@ -103,15 +42,7 @@ const ClassRoomList: React.FC<ClassRoomListProps> = () => {
                         label={
                             <Box className="classroom-list-tab">
                                 {classroom.name}
-                                {classroom?.id && (classroom.id > -1) &&
-                                    <IconButton
-                                        size="small"
-                                        onClick={(e) => handleOpenMenu(e, classroom.id ?? -1)}
-                                        className="classroom-list-settings-icon"
-                                    >
-                                        <SettingsIcon />
-                                    </IconButton>
-                                }
+                                <ClassroomMenuModal classroom={classroom} />
                             </Box>
                         }
                     />
@@ -120,47 +51,11 @@ const ClassRoomList: React.FC<ClassRoomListProps> = () => {
 
             {activeTab >= 0 && activeTab < classrooms.length && (
                 <Box className="classroom-list-student-list">
-                    <GradedStudentList classroomId={classrooms[activeTab]?.id ?? -1} mediaGeral={values.mediaGradedStudent} />
+                    <StudentViewList classroomId={classrooms[activeTab]?.id ?? -1} mediaGeral={values.mediaClassroomGrades} />
                 </Box>
             )}
-
-            <Dialog open={openModal} onClose={handleCloseModal} className="classroom-list-dialog">
-                <DialogTitle>{editMode ? "Editar Turma" : "Criar Nova Turma"}</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label="Nome da ClassRoom"
-                        value={novaClassRoom}
-                        onChange={(e) => setNovaClassRoom(e.target.value)}
-                        className="classroom-list-textfield"
-                        fullWidth
-                    />
-                </DialogContent>
-                <DialogActions className="classroom-list-actions">
-                    <Button onClick={handleCloseModal} color="secondary">
-                        Cancelar
-                    </Button>
-                    <Button onClick={handleSubmit} color="primary" variant="contained">
-                        {editMode ? "Salvar" : "Criar"}
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
-            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
-                <MenuItem onClick={handleEditClassRoom}>
-                    <ListItemIcon>
-                        <EditIcon fontSize="small" />
-                    </ListItemIcon>
-                    Editar
-                </MenuItem>
-                <MenuItem onClick={handleDeleteClassRoom}>
-                    <ListItemIcon>
-                        <DeleteIcon fontSize="small" />
-                    </ListItemIcon>
-                    Remover
-                </MenuItem>
-            </Menu>
         </div>
     );
 };
 
-export default ClassRoomList;
+export default ClassroomList;

@@ -1,123 +1,105 @@
 import { Request, Response } from 'express';
-import GradedStudent from '../models/GradedStudent';
 import { getGradedStudents, saveGradedStudents } from '../repositories/gradedStudentRepository';
-import Classroom from '../models/Classroom';
+import { ClassroomInterface } from '../models/Classroom';
 import { getClassrooms } from '../repositories/classroomRepository';
-import { getStudents } from '../repositories/studentRepository';
+import Grade, { GradeInterface } from '../models/Grade';
 
 // Criar ou atualizar uma grade para um student em uma classroom
 const createOrUpdateGradedStudent = (req: Request, res: Response) => {
-    const { grade, frequency } = req.body;
+    const { grade } = req.body;
     const classroomId = parseInt(req.params.classroomId);
     const studentId = parseInt(req.params.studentId);
 
-    const grades: GradedStudent[] = getGradedStudents();
-
-    console.log(req.params);
+    const grades: Grade[] = getGradedStudents();
 
     if (grade < 0 || grade > 10) {
         return res.status(400).json({ message: "Erro: A nota deve estar entre 0 e 10." });
     }
 
-    if (frequency < 0 || frequency > 100) {
-        return res.status(400).json({ message: "Erro: A frequência deve estar entre 0 e 100." });
-    }
+    const novaGradedStudent: Grade = {
+        id: grades.length > 0 ? grades[grades.length - 1].id + 1 : 1,
+        studentId: studentId,
+        classroomId: classroomId,
+        grade: grade,
+    };
 
-    // Verifica se já existe uma grade para o student na classroom
-    const gradeExistente = grades.find(n => n.studentId === studentId && n.classroomId === classroomId);
-
-    if (gradeExistente) {
-        // Atualiza a grade existente
-        gradeExistente.grade = grade;
-        gradeExistente.frequency = frequency;
-
-        saveGradedStudents(grades);
-        return res.status(200).json({ message: "Dados atualizados com sucesso!", data: gradeExistente });
-    } else {
-        // Cria uma nova grade
-        const novaGradedStudent: GradedStudent = {
-            id: grades.length > 0 ? grades[grades.length - 1].id + 1 : 1,
-            studentId: studentId,
-            classroomId: classroomId,
-            grade: grade,
-            frequency: frequency
-        };
-
-        grades.push(novaGradedStudent);
-        saveGradedStudents(grades);
-        return res.status(201).json({ message: "Dados criados com sucesso!", data: novaGradedStudent });
-    }
+    grades.push(novaGradedStudent);
+    saveGradedStudents(grades);
+    return res.status(201).json({ message: "Dados criados com sucesso!", data: novaGradedStudent });
 };
 
-// Obter grades por student e classroom
-const getGradedStudentsByStudentAndClassroom = (req: Request, res: Response) => {
+// Atualizar uma nota existente para um student em uma classroom
+const updateGradedStudent = (req: Request, res: Response) => {
+    const { grade } = req.body;
     const classroomId = parseInt(req.params.classroomId);
     const studentId = parseInt(req.params.studentId);
 
-    const grades: GradedStudent[] = getGradedStudents();
+    let grades: Grade[] = getGradedStudents();
 
-    const gradesStudentClassroom = grades.filter(grade => grade.classroomId === classroomId && grade.studentId === studentId);
+    if (grade < 0 || grade > 10) {
+        return res.status(400).json({ message: "Erro: A nota deve estar entre 0 e 10." });
+    }
 
-    if (gradesStudentClassroom.length > 0) {
-        res.status(200).json({ message: "Requisição realizada com sucesso!", data: gradesStudentClassroom });
+    const gradeExistente = grades?.find(n => n.studentId === studentId && n.classroomId === classroomId);
+
+    if (gradeExistente) {
+        gradeExistente.grade = grade;
+        saveGradedStudents(grades);
+        return res.status(200).json({ message: "Nota atualizada com sucesso!", data: gradeExistente });
     } else {
-        res.status(200).json({ message: "Sem dados", data: [] });
+        return res.status(404).json({ message: "Erro: Nota não encontrada para este aluno e sala de aula." });
     }
 };
 
-// Obter dados de resumo por classroom
 const getStatisticsByClassroom = (req: Request, res: Response) => {
     try {
-        const gradesData: GradedStudent[] = getGradedStudents();
-        const classroomsData = getClassrooms();
+        const gradesData: GradeInterface[] = getGradedStudents();
+        const classroomsData: ClassroomInterface[] = getClassrooms();
 
-        const qtdStudents = getStudents()?.length;
+        if (!gradesData.length) {
+            return res.status(400).json({ message: "Nenhum dado de alunos encontrado." });
+        }
 
-        const totalGradedStudents = gradesData.length;
-        const totalGradedStudent = gradesData.reduce((sum: number, grade: GradedStudent) => sum + (grade.grade || 0), 0);
-        const totalFrequency = gradesData.reduce((sum: number, grade: GradedStudent) => sum + (grade.frequency || 0), 0);
-
-        const mediaGradedStudent = totalGradedStudents > 0 ? totalGradedStudent / totalGradedStudents : 0;
-        const mediaFrequency = totalGradedStudents > 0 ? totalFrequency / totalGradedStudents : 0;
-
-        // Calcular médias por classroom
+        // Calcular médias por Turma
         const mediasPorClassroom = gradesData.reduce((acc, grade) => {
-            const { classroomId, grade: gradeStudent, frequency } = grade;
+            const { classroomId, grade: gradeStudent } = grade;
 
             if (!acc[classroomId]) {
                 acc[classroomId] = {
                     totalGradedStudents: 0,
-                    totalFrequency: 0,
                     contador: 0,
                 };
             }
 
             acc[classroomId].totalGradedStudents += gradeStudent || 0;
-            acc[classroomId].totalFrequency += frequency || 0;
             acc[classroomId].contador += 1;
 
             return acc;
-        }, {} as Record<number, { totalGradedStudents: number, totalFrequency: number, contador: number }>);
+        }, {} as Record<number, { totalGradedStudents: number, contador: number }>);
 
-        // Criar um array de médias para todas as classrooms, incluindo as sem grades
-        const mediaPorClassRoom = classroomsData.map((classroom: Classroom) => {
+        // Criar um array de médias para todas as classrooms, incluindo as sem notas
+        const mediaPorClassroom = classroomsData.map((classroom: ClassroomInterface) => {
             const classroomStats = mediasPorClassroom[classroom.id];
 
             return {
                 classroomId: classroom.id,
                 classroomName: classroom.name,
-                mediaGradedStudent: classroomStats ? (classroomStats.totalGradedStudents / classroomStats.contador) : null,
-                mediaFrequency: classroomStats ? (classroomStats.totalFrequency / classroomStats.contador) : null,
+                mediaClassroomGrades: classroomStats ? (classroomStats.totalGradedStudents / classroomStats.contador) : null,
             };
         });
+
+        // Calcular a média geral (soma das médias de cada turma / quantidade de turmas)
+        const somaMediasPorClassroom = mediaPorClassroom.reduce((sum, classroom) => {
+            return sum + (classroom.mediaClassroomGrades || 0);
+        }, 0);
+
+        const mediaClassroomGrades = somaMediasPorClassroom / classroomsData.length;
 
         res.status(200).json({
             message: "Requisição realizada com sucesso!",
             data: {
-                mediaGradedStudent,
-                mediaFrequency,
-                totalStudents: qtdStudents,
-                mediaPorClassRoom,
+                mediaPorClassroom,
+                mediaClassroomGrades // Média geral
             },
         });
     } catch (error) {
@@ -127,6 +109,6 @@ const getStatisticsByClassroom = (req: Request, res: Response) => {
 
 export {
     createOrUpdateGradedStudent,
-    getGradedStudentsByStudentAndClassroom,
+    updateGradedStudent,
     getStatisticsByClassroom
 };

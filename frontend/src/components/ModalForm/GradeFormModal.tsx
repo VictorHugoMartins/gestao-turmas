@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Nota } from '../../types';
+import { StudentView } from '../../types';
 import {
     TextField,
     Button,
@@ -7,11 +7,10 @@ import {
     Box,
     Typography,
 } from '@mui/material';
-import axios from 'axios';
 import { useStudent } from '../../contexts/StudentContext';
 
 interface NotaFormProps {
-    grade: Nota;
+    grade: StudentView;
     classroomId: number;
     id: number;
     studentId: number;
@@ -26,17 +25,16 @@ const style = {
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4,
+    borderRadius: 2,
 };
 
-const NotaForm: React.FC<NotaFormProps> = ({ grade, classroomId, id }) => {
-    const { buscarStudents } = useStudent();
+const GradeForm: React.FC<NotaFormProps> = ({ grade, classroomId, id }) => {
+    const { editarStudentGrade } = useStudent();
     const [showModal, setShowModal] = useState<boolean>(false);
     const [notaValue, setNotaValue] = useState<number>(grade.grade);
-    const [frequency, setFrequencia] = useState<number>(grade.frequency);
-
+    
     const openEditModal = () => {
         setNotaValue(grade.grade);
-        setFrequencia(grade.frequency);
         setShowModal(true);
     };
 
@@ -46,26 +44,17 @@ const NotaForm: React.FC<NotaFormProps> = ({ grade, classroomId, id }) => {
     };
 
     const resetForm = () => {
-        setNotaValue(0);
-        setFrequencia(0);
+        setNotaValue(grade.grade);
     };
 
     const handleSubmit = async () => {
-        try {
-            const response = await axios.post(`http://localhost:5000/api/classrooms/${classroomId}/students/${grade.studentId}/notas`, {
-                grade: notaValue,
-                frequency,
-            });
-            alert(response.data.message);
-        } catch (error) {
-            alert("Erro ao atualizar notas.");
-        }
-        buscarStudents(classroomId);
+        await editarStudentGrade(grade, classroomId, notaValue);
         closeModal();
     };
 
     return (
         <>
+            {/* Botão para abrir o modal de edição */}
             <Button
                 variant="contained"
                 color="warning"
@@ -75,7 +64,7 @@ const NotaForm: React.FC<NotaFormProps> = ({ grade, classroomId, id }) => {
                 Editar Notas
             </Button>
 
-            {/* Modal para editar notas do student */}
+            {/* Modal para editar notas */}
             <Modal open={showModal} onClose={closeModal}>
                 <Box sx={style}>
                     <Typography variant="h6" component="h2">
@@ -89,23 +78,24 @@ const NotaForm: React.FC<NotaFormProps> = ({ grade, classroomId, id }) => {
                             value={notaValue}
                             onChange={(e) => setNotaValue(Number(e.target.value))}
                             margin="normal"
+                            inputProps={{ min: 0, max: 10 }} // Limita o valor entre 0 e 10
                         />
-                        <TextField
-                            fullWidth
-                            label="Frequência (%)"
-                            type="number"
-                            value={frequency}
-                            onChange={(e) => setFrequencia(Number(e.target.value))}
-                            margin="normal"
-                        />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleSubmit}
-                            sx={{ mt: 2 }}
-                        >
-                            Salvar
-                        </Button>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                onClick={closeModal}
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleSubmit}
+                            >
+                                Salvar
+                            </Button>
+                        </Box>
                     </Box>
                 </Box>
             </Modal>
@@ -113,4 +103,4 @@ const NotaForm: React.FC<NotaFormProps> = ({ grade, classroomId, id }) => {
     );
 };
 
-export default NotaForm;
+export default GradeForm;
