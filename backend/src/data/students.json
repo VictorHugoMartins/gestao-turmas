@@ -2,13 +2,13 @@
   {
     "id": 1,
     "name": "Maria",
-    "image_url": "",
+    "image_url": "https://img.freepik.com/premium-vector/black-african-american-woman-round-avatar-face-icon-flat-style_768258-2090.jpg",
     "frequency": 70
   },
   {
     "id": 2,
     "name": "João",
-    "image_url": "",
+    "image_url": "https://img.freepik.com/premium-vector/african-american-black-young-man-rhombus-vest-round-avatar-face-icon-flat-style_768258-2936.jpg",
     "frequency": 80
   }
 ]
