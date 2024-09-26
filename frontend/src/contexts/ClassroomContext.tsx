@@ -41,11 +41,8 @@ export const ClassroomProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const criarClassroom = async (name: string) => {
         try {
             const response = await axios.post(`http://localhost:5000/api/classrooms`, { name });
-            if (response) {
-                if (window.confirm("Turma criada com sucesso!")) {
-                    buscarClassrooms();
-                    window.location.reload();
-                }
+            if (response?.data) {
+                alert("Turma criada com sucesso!");
             }
         } catch (error) {
             alert('Erro ao criar turma:');
@@ -59,10 +56,7 @@ export const ClassroomProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 setClassrooms((prev) =>
                     prev.map((classroom) => (classroom.id === id ? response.data : classroom))
                 );
-                if (window.confirm("Turma atualizada com sucesso!")) {
-                    buscarClassrooms();
-                    window.location.reload();
-                }
+                alert("Turma atualizada com sucesso!");
             }
         } catch (error) {
             alert('Erro ao editar turma:');

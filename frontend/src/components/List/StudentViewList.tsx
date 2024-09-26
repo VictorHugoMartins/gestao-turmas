@@ -48,6 +48,10 @@ const StudentViewList: React.FC<StudentViewListProps> = ({ classroomId }) => {
         (minFrequency === '' || grade.frequency >= minFrequency) // Filtro de frequência mínima
     );
 
+    // Obtendo a média da turma correspondente ao classroomId
+    const classroomAverage = values.mediaPorClassroom.find(item => item.classroomId === classroomId)?.mediaClassroomGrades;
+
+
     return (
         <>
             {/* Barra de pesquisa */}
@@ -87,32 +91,40 @@ const StudentViewList: React.FC<StudentViewListProps> = ({ classroomId }) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {filteredGrades.map((grade: StudentView) => (
-                            <TableRow key={grade.id}>
-                                <TableCell>
-                                    <StyledImage
-                                        src={grade.image_url || 'https://via.placeholder.com/50'}
-                                        alt={grade.name}
-                                    />
-                                </TableCell>
-                                <TableCell>{grade.name}</TableCell>
-                                <TableCell>
-                                    <strong style={{ color: grade.grade > values.mediaClassroomGrades ? "#43d669" : 'inherit' }}>
-                                        {grade.grade?.toFixed(2) ?? '--'}
-                                    </strong>
-                                </TableCell>
-                                <TableCell>
-                                    <strong style={{ color: grade.frequency < 75 ? "orange" : 'inherit' }}>
-                                        {grade.frequency?.toFixed(2) ?? '--'}%
-                                    </strong>
-                                </TableCell>
-                                <TableCell>
-                                    {classroomId > -1 ?
-                                        <GradeForm classroomId={classroomId} id={grade.id ?? -1} studentId={grade.studentId} grade={grade} />
-                                        : <EditStudentModal student={grade} studentId={grade.studentId} classroomId={classroomId} />}
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                        {filteredGrades.map((grade: StudentView) => {
+                            let betterThanClassroomAverage = classroomAverage && grade.grade > classroomAverage;
+                            let betterThanGeralAverage = grade.classroomId === -1 && grade.grade > values.mediaClassroomGrades;
+
+                            return (
+                                <TableRow key={grade.id}>
+                                    <TableCell>
+                                        <StyledImage
+                                            src={grade.image_url || 'https://via.placeholder.com/50'}
+                                            alt={grade.name}
+                                        />
+                                    </TableCell>
+                                    <TableCell>{grade.name}</TableCell>
+                                    <TableCell>
+                                        <strong style={{
+                                            color: betterThanClassroomAverage || betterThanGeralAverage ?
+                                                "#43d669" : 'inherit'
+                                        }}>
+                                            {grade.grade?.toFixed(2) ?? '--'}
+                                        </strong>
+                                    </TableCell>
+                                    <TableCell>
+                                        <strong style={{ color: grade.frequency < 75 ? "orange" : 'inherit' }}>
+                                            {grade.frequency?.toFixed(2) ?? '--'}%
+                                        </strong>
+                                    </TableCell>
+                                    <TableCell>
+                                        {classroomId > -1 ?
+                                            <GradeForm classroomId={classroomId} id={grade.id ?? -1} studentId={grade.studentId} grade={grade} />
+                                            : <EditStudentModal student={grade} studentId={grade.studentId} classroomId={classroomId} />}
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
                     </TableBody>
                 </Table>
             </TableContainer>

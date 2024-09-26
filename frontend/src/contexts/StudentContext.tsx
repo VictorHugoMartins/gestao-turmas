@@ -66,10 +66,7 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
                 grade: notaValue
             });
             if (response) {
-                if (window.confirm("Turma atualizada com sucesso!")) {
-                    await buscarStudents(classroomId);
-                    window.location.reload();
-                }
+                alert("Turma atualizada com sucesso!");
             }
         } catch (error) {
             alert("Erro ao atualizar notas.");

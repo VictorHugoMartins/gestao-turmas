@@ -27,7 +27,7 @@ const ClassroomList: React.FC<ClassroomListProps> = () => {
             </Typography>
 
             <p>
-                Abaixo você pode ver todos os seus alunos. Na <strong>primeira aba</strong>, você consegue ver todos os seus alunos e suas médias gerais dentro de <strong>todas as turmas</strong>. Nesta aba, você também pode <strong>editar os dados pessoas</strong> desses alunos. Nas demais abas, você pode ver <strong>as notas dos alunos por turma</strong>. Estão destacadas em <strong style={{ color: "#43d669" }}> verde</strong> aquelas notas <strong style={{ color: "#43d669" }}> maiores que a média da turma</strong> e em <strong style={{ color: "orange" }}>laranja</strong> as <strong style={{ color: "orange" }}>frequências menores que 75%</strong>.
+                Abaixo você pode ver todos os seus alunos. Na <strong>primeira aba</strong>, você consegue ver todos os seus alunos e suas médias gerais dentro de <strong>todas as turmas</strong>. Nesta aba, você também pode <strong>editar os dados pessoas</strong> desses alunos. Nas demais abas, você pode ver <strong>as notas dos alunos por turma</strong>. Estão destacadas em <strong style={{ color: "#43d669" }}> verde</strong> aquelas notas <strong style={{ color: "#43d669" }}> maiores que a média da turma</strong> (ou cuja <strong>média de todas as notas</strong> é <strong>maior que a média de todas as turmas</strong>) e em <strong style={{ color: "orange" }}>laranja</strong> as <strong style={{ color: "orange" }}>frequências menores que 75%</strong>.
             </p>
 
             <Tabs

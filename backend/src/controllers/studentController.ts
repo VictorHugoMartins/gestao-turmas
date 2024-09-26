@@ -121,49 +121,55 @@ const listarStudents = (req: Request, res: Response) => {
     }
 };
 
+// Obter dados de resumo
 const listStudentsMedias = (req: Request, res: Response) => {
     try {
         const students: Student[] = getStudents();
         const grades = getGradedStudents();
 
+        // Mapeia as notas por turma
         const classroomMap: { [key: number]: { totalGradedStudents: number; totalStudents: number; } } = {};
 
-        // Itera sobre as grades para agregar as informações por classroom
+        // Itera sobre as notas para agregar as informações por classroom
         grades.forEach((grade: Grade) => {
             if (!classroomMap[grade.classroomId]) {
                 classroomMap[grade.classroomId] = { totalGradedStudents: 0, totalStudents: 0 };
             }
             classroomMap[grade.classroomId].totalGradedStudents += grade.grade || 0;
-            classroomMap[grade.classroomId].totalStudents += 1; // Incrementa o número de students na classroom
+            classroomMap[grade.classroomId].totalStudents += 1; // Incrementa o número de alunos na turma
         });
 
-        // Itera sobre os students para calcular as médias
+        // Itera sobre os alunos para calcular as médias
         const resultado: any[] = students.map(student => {
+            // Filtra as notas do aluno
             const gradesDoStudent = grades.filter((grade: Grade) => grade.studentId === student.id);
 
-            let somaGradedStudents = 0;
-            let totalClassrooms = 0;
+            let somaNotas = 0;
+            let totalTurmas = 0;
 
+            // Soma as notas e conta as turmas
             gradesDoStudent.forEach((grade: Grade) => {
                 const classroomInfo = classroomMap[grade.classroomId];
                 if (classroomInfo) {
-                    const mediaClassroomGradedStudent = classroomInfo.totalGradedStudents / classroomInfo.totalStudents;
-
-                    somaGradedStudents += mediaClassroomGradedStudent;
-                    totalClassrooms += 1; // Incrementa o número de classrooms que o student participa
+                    somaNotas += grade.grade || 0; // Soma a nota do aluno
+                    totalTurmas += 1; // Incrementa o número de turmas em que o aluno está
                 }
             });
 
+            // Calcula a média
+            const mediaAluno = totalTurmas > 0 ? somaNotas / totalTurmas : null;
+
             return {
                 studentId: student.id,
+                classroomId: -1,
                 image_url: student.image_url,
                 name: student.name,
-                grade: totalClassrooms > 0 ? somaGradedStudents / totalClassrooms : null,
+                grade: mediaAluno,
                 frequency: student.frequency,
             };
         });
 
-        // Ordena o resultado alfabeticamente pelo name do student
+        // Ordena o resultado alfabeticamente pelo nome do aluno
         const resultadoOrdenado = resultado.sort((a, b) => a.name.localeCompare(b.name));
 
         res.json({ message: "Requisição realizada com sucesso!", data: resultadoOrdenado });

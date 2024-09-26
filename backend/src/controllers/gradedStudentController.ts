@@ -57,7 +57,7 @@ const getStatisticsByClassroom = (req: Request, res: Response) => {
         const classroomsData: ClassroomInterface[] = getClassrooms();
 
         if (!gradesData.length) {
-            return res.status(400).json({ message: "Nenhum dado de alunos encontrado." });
+            return res.status(200).json({ message: "Nenhum dado de alunos encontrado." });
         }
 
         // Calcular médias por Turma

@@ -2,19 +2,13 @@
   {
     "id": 1,
     "name": "Maria",
-    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkTGe0AZKFaM2GAuyv--ob1HDeJD3b315X5A&s",
+    "image_url": "",
     "frequency": 70
   },
   {
     "id": 2,
-    "name": "Pedro",
-    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkTGe0AZKFaM2GAuyv--ob1HDeJD3b315X5A&s",
-    "frequency": 70
-  },
-  {
-    "id": 5,
-    "name": "Joyce",
-    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkTGe0AZKFaM2GAuyv--ob1HDeJD3b315X5A&s",
-    "frequency": 91
+    "name": "João",
+    "image_url": "",
+    "frequency": 80
   }
 ]
