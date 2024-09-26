@@ -17,7 +17,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ reload }) => {
     if (reload) {
       fetchData();
     }
-  }, [reload]);
+  }, [reload, fetchStatistics]);
 
   return (
     <Box sx={{ mt: 3 }}>
@@ -25,14 +25,20 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ reload }) => {
         <Grid item xs={12} sm={6} md={2}>
           <Card sx={{ p: 2 }}>
             <Typography variant="caption">Nota Média das Turmas</Typography>
-            <Typography variant="h5">{values.mediaClassroomGrades?.toFixed(2)}</Typography>
+            <Typography variant="h5">
+              {values.mediaClassroomGrades?.toFixed(2)}
+            </Typography>
           </Card>
         </Grid>
         {values.mediaPorClassroom?.map((item) => (
           <Grid item xs={12} sm={6} md={2}>
             <Card sx={{ p: 2 }}>
-              <Typography variant="caption">Nota média de {item.classroomName}</Typography>
-              <Typography variant="h5">{item.mediaClassroomGrades?.toFixed(2) ?? "--"}</Typography>
+              <Typography variant="caption">
+                Nota média de {item.classroomName}
+              </Typography>
+              <Typography variant="h5">
+                {item.mediaClassroomGrades?.toFixed(2) ?? '--'}
+              </Typography>
             </Card>
           </Grid>
         ))}

@@ -15,14 +15,23 @@ type StatisticsContextType = {
   fetchStatistics: Function;
 };
 
-const StatisticsContext = createContext<StatisticsContextType | undefined>(undefined);
+const StatisticsContext = createContext<StatisticsContextType | undefined>(
+  undefined,
+);
 
-export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [values, setValues] = useState<CardsResumeValues>({ mediaClassroomGrades: 0, mediaPorClassroom: [] });
+export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [values, setValues] = useState<CardsResumeValues>({
+    mediaClassroomGrades: 0,
+    mediaPorClassroom: [],
+  });
 
   const fetchStatistics = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/grades/statistics`);
+      const response = await axios.get(
+        `http://localhost:5000/api/grades/statistics`,
+      );
 
       if (response?.data && response?.data?.data) {
         setValues(response.data.data);

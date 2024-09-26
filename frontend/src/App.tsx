@@ -45,6 +45,6 @@ const App: React.FC = () => {
       </StatisticsProvider>
     </ThemeProvider>
   );
-}
+};
 
 export default App;
