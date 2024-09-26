@@ -21,7 +21,7 @@ const createStudent = (req: Request, res: Response) => {
 
   const studentExistente = students?.find((student) => student.name === name);
   if (studentExistente) {
-    return res.status(400).json({ message: "Erro: Aluno já existe." });
+    return res.status(400).json({ message: "Aluno já existe." });
   }
 
   const novoStudent: Student = {
@@ -73,7 +73,7 @@ const updateStudent = (req: Request, res: Response) => {
 
   const student = students?.find((a) => a.id === studentId);
   if (!student) {
-    return res.status(404).json({ message: "Erro: Aluno não encontrado." });
+    return res.status(404).json({ message: "Aluno não encontrado." });
   }
 
   student.name = name || student.name;
@@ -93,7 +93,7 @@ const deleteStudent = (req: Request, res: Response) => {
 
   const studentIndex = students?.findIndex((a) => a.id === studentId);
   if (studentIndex === -1) {
-    return res.status(404).json({ message: "Erro: Aluno não encontrado." });
+    return res.status(404).json({ message: "Aluno não encontrado." });
   }
 
   students.splice(studentIndex, 1);

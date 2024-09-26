@@ -35,6 +35,8 @@ export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (response?.data && response?.data?.data) {
         setValues(response.data.data);
+      } else if (response.data.message) {
+        alert(response.data.message);
       }
     } catch (error) {
       alert('Erro ao buscar estatísticas:');

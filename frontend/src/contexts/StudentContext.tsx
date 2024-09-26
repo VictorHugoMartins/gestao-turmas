@@ -46,8 +46,8 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (response.data && response.data.data) {
         setStudents(response.data.data);
-      } else {
-        alert('Formato de resposta inesperado ao buscar alunos');
+      } else if (response.data.message) {
+        alert(response.data.message);
       }
     } catch (error) {
       alert('Erro ao buscar alunos');
@@ -65,8 +65,9 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({
           prev.map((a) => (a.id === student.id ? response.data.data : a)),
         );
         await buscarStudents(-1);
-      } else {
-        alert('Formato de resposta inesperado ao editar aluno');
+      }
+      if (response.data.message) {
+        alert(response.data.message);
       }
     } catch (error) {
       alert('Erro ao editar aluno');

@@ -18,7 +18,7 @@ const createOrUpdateStudentView = (req: Request, res: Response) => {
   if (grade < 0 || grade > 10) {
     return res
       .status(400)
-      .json({ message: "Erro: A nota deve estar entre 0 e 10." });
+      .json({ message: "A nota deve estar entre 0 e 10." });
   }
 
   const novaStudentView: Grade = {
@@ -46,7 +46,7 @@ const updateStudentView = (req: Request, res: Response) => {
   if (grade < 0 || grade > 10) {
     return res
       .status(400)
-      .json({ message: "Erro: A nota deve estar entre 0 e 10." });
+      .json({ message: "A nota deve estar entre 0 e 10." });
   }
 
   const gradeExistente = grades?.find(
@@ -63,7 +63,7 @@ const updateStudentView = (req: Request, res: Response) => {
     return res
       .status(404)
       .json({
-        message: "Erro: Nota não encontrada para este aluno e sala de aula.",
+        message: "Nota não encontrada para este aluno e sala de aula.",
       });
   }
 };

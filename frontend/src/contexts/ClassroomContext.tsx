@@ -34,9 +34,8 @@ export const ClassroomProvider: React.FC<{ children: React.ReactNode }> = ({
       );
       if (Array.isArray(response.data?.data)) {
         setClassrooms(response.data.data);
-      } else {
-        alert('Formato de resposta inesperado ao buscar turmas:');
-        setClassrooms([]);
+      } else if (response.data.message) {
+        alert(response.data.message);
       }
     } catch (error) {
       alert('Erro ao buscar turmas:');

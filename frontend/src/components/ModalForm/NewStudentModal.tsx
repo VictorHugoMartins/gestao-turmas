@@ -36,8 +36,8 @@ const NewStudentModal: React.FC = () => {
       );
       if (Array.isArray(response.data?.data)) {
         setClassrooms(response.data.data);
-      } else {
-        alert('Formato de resposta inesperado ao buscar turmas');
+      } else if (response.data.message) {
+        alert(response.data.message);
         setClassrooms([]);
       }
     } catch (error) {
@@ -53,9 +53,9 @@ const NewStudentModal: React.FC = () => {
         student,
       );
       if (response.data && response.data.data) {
-        // Aluno criado com sucesso
-      } else {
-        alert('Formato de resposta inesperado ao criar aluno');
+      }
+      if (response.data.message) {
+        alert(response.data.message);
       }
     } catch (error) {
       alert('Erro ao criar aluno!');

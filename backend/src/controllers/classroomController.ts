@@ -14,7 +14,7 @@ const createClassroom = (req: Request, res: Response) => {
     (classroom) => classroom.name === name,
   );
   if (classroomExistente) {
-    return res.status(400).json({ message: "Erro: Turma já existe." });
+    return res.status(400).json({ message: "Turma já existe." });
   }
 
   const novaClassroom: Classroom = {
@@ -37,7 +37,7 @@ const updateClassroom = (req: Request, res: Response) => {
 
   const classroom = classrooms?.find((t) => t.id === classroomId);
   if (!classroom) {
-    return res.status(404).json({ message: "Erro: Turma não encontrada." });
+    return res.status(404).json({ message: "Turma não encontrada." });
   }
 
   classroom.name = name || classroom.name;
@@ -55,7 +55,7 @@ const deleteClassroom = (req: Request, res: Response) => {
 
   const classroomIndex = classrooms?.findIndex((t) => t.id === classroomId);
   if (classroomIndex === -1) {
-    return res.status(404).json({ message: "Erro: Turma não encontrada." });
+    return res.status(404).json({ message: "Turma não encontrada." });
   }
 
   classrooms.splice(classroomIndex, 1);
