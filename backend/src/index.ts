@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import * as studentController from './controllers/studentController';
 import * as classroomController from './controllers/classroomController';
-import * as gradeController from './controllers/gradedStudentController';
+import * as gradeController from './controllers/gradeController';
 
 const app = express();
 const port = 5000;
@@ -28,7 +28,7 @@ app.get('/api/classrooms/ListarClassrooms', classroomController.listClassrooms);
 
 // Rotas de grades
 app.get('/api/grades/statistics', gradeController.getStatisticsByClassroom); // ok
-app.put('/api/grades/:classroomId/students/:studentId', gradeController.updateGradedStudent); // ok
+app.put('/api/grades/:classroomId/students/:studentId', gradeController.updateStudentView); // ok
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

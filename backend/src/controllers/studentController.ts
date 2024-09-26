@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getStudents, saveStudents } from '../repositories/studentRepository';
-import { getGradedStudents, saveGradedStudents } from '../repositories/gradedStudentRepository';
+import { getStudentViews, saveStudentViews } from '../repositories/gradeRepository';
 import Student from '../models/Student';
 import Classroom from '../models/Classroom';
 import { getClassrooms } from '../repositories/classroomRepository';
@@ -12,8 +12,8 @@ const defaultImgUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkT
 const createStudent = (req: Request, res: Response) => {
     const students: Student[] = getStudents();
     const classrooms: Classroom[] = getClassrooms();
-    const grades: Grade[] = getGradedStudents();
-    const { name, image_url, frequency, gradedStudents } = req.body;
+    const grades: Grade[] = getStudentViews();
+    const { name, image_url, frequency, studentViews } = req.body;
     
     const studentExistente = students?.find(student => student.name === name);
     if (studentExistente) {
@@ -33,7 +33,7 @@ const createStudent = (req: Request, res: Response) => {
 
     // Para cada turma existente, cria uma nota inicial para o novo aluno
     classrooms.forEach((classroom) => {
-        const gradeInput = gradedStudents?.find((input: { classroomId: number }) => input.classroomId === classroom.id);
+        const gradeInput = studentViews?.find((input: { classroomId: number }) => input.classroomId === classroom.id);
         
         if ( gradeInput ){
         const novaNota: Grade = {
@@ -48,7 +48,7 @@ const createStudent = (req: Request, res: Response) => {
     });
 
     // Salva as notas atualizadas
-    saveGradedStudents(grades);
+    saveStudentViews(grades);
 
     res.status(201).json({ message: "Aluno criado com sucesso e notas atribuídas em todas as turmas!", data: novoStudent });
 };
@@ -91,7 +91,7 @@ const listarStudents = (req: Request, res: Response) => {
     try {
         const classroomId = parseInt(req.params.classroomId);
         const students: Student[] = getStudents();
-        const grades = getGradedStudents();
+        const grades = getStudentViews();
         const classrooms = getClassrooms();
 
         const classroom = classrooms?.find((t: Classroom) => t?.id === classroomId);
@@ -125,17 +125,17 @@ const listarStudents = (req: Request, res: Response) => {
 const listStudentsMedias = (req: Request, res: Response) => {
     try {
         const students: Student[] = getStudents();
-        const grades = getGradedStudents();
+        const grades = getStudentViews();
 
         // Mapeia as notas por turma
-        const classroomMap: { [key: number]: { totalGradedStudents: number; totalStudents: number; } } = {};
+        const classroomMap: { [key: number]: { totalStudentViews: number; totalStudents: number; } } = {};
 
         // Itera sobre as notas para agregar as informações por classroom
         grades.forEach((grade: Grade) => {
             if (!classroomMap[grade.classroomId]) {
-                classroomMap[grade.classroomId] = { totalGradedStudents: 0, totalStudents: 0 };
+                classroomMap[grade.classroomId] = { totalStudentViews: 0, totalStudents: 0 };
             }
-            classroomMap[grade.classroomId].totalGradedStudents += grade.grade || 0;
+            classroomMap[grade.classroomId].totalStudentViews += grade.grade || 0;
             classroomMap[grade.classroomId].totalStudents += 1; // Incrementa o número de alunos na turma
         });
 

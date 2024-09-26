@@ -1,40 +1,40 @@
 import { Request, Response } from 'express';
-import { getGradedStudents, saveGradedStudents } from '../repositories/gradedStudentRepository';
+import { getStudentViews, saveStudentViews } from '../repositories/gradeRepository';
 import { ClassroomInterface } from '../models/Classroom';
 import { getClassrooms } from '../repositories/classroomRepository';
 import Grade, { GradeInterface } from '../models/Grade';
 
 // Criar ou atualizar uma grade para um student em uma classroom
-const createOrUpdateGradedStudent = (req: Request, res: Response) => {
+const createOrUpdateStudentView = (req: Request, res: Response) => {
     const { grade } = req.body;
     const classroomId = parseInt(req.params.classroomId);
     const studentId = parseInt(req.params.studentId);
 
-    const grades: Grade[] = getGradedStudents();
+    const grades: Grade[] = getStudentViews();
 
     if (grade < 0 || grade > 10) {
         return res.status(400).json({ message: "Erro: A nota deve estar entre 0 e 10." });
     }
 
-    const novaGradedStudent: Grade = {
+    const novaStudentView: Grade = {
         id: grades.length > 0 ? grades[grades.length - 1].id + 1 : 1,
         studentId: studentId,
         classroomId: classroomId,
         grade: grade,
     };
 
-    grades.push(novaGradedStudent);
-    saveGradedStudents(grades);
-    return res.status(201).json({ message: "Dados criados com sucesso!", data: novaGradedStudent });
+    grades.push(novaStudentView);
+    saveStudentViews(grades);
+    return res.status(201).json({ message: "Dados criados com sucesso!", data: novaStudentView });
 };
 
 // Atualizar uma nota existente para um student em uma classroom
-const updateGradedStudent = (req: Request, res: Response) => {
+const updateStudentView = (req: Request, res: Response) => {
     const { grade } = req.body;
     const classroomId = parseInt(req.params.classroomId);
     const studentId = parseInt(req.params.studentId);
 
-    let grades: Grade[] = getGradedStudents();
+    let grades: Grade[] = getStudentViews();
 
     if (grade < 0 || grade > 10) {
         return res.status(400).json({ message: "Erro: A nota deve estar entre 0 e 10." });
@@ -44,7 +44,7 @@ const updateGradedStudent = (req: Request, res: Response) => {
 
     if (gradeExistente) {
         gradeExistente.grade = grade;
-        saveGradedStudents(grades);
+        saveStudentViews(grades);
         return res.status(200).json({ message: "Nota atualizada com sucesso!", data: gradeExistente });
     } else {
         return res.status(404).json({ message: "Erro: Nota não encontrada para este aluno e sala de aula." });
@@ -53,7 +53,7 @@ const updateGradedStudent = (req: Request, res: Response) => {
 
 const getStatisticsByClassroom = (req: Request, res: Response) => {
     try {
-        const gradesData: GradeInterface[] = getGradedStudents();
+        const gradesData: GradeInterface[] = getStudentViews();
         const classroomsData: ClassroomInterface[] = getClassrooms();
 
         if (!gradesData.length) {
@@ -66,16 +66,16 @@ const getStatisticsByClassroom = (req: Request, res: Response) => {
 
             if (!acc[classroomId]) {
                 acc[classroomId] = {
-                    totalGradedStudents: 0,
+                    totalStudentViews: 0,
                     contador: 0,
                 };
             }
 
-            acc[classroomId].totalGradedStudents += gradeStudent || 0;
+            acc[classroomId].totalStudentViews += gradeStudent || 0;
             acc[classroomId].contador += 1;
 
             return acc;
-        }, {} as Record<number, { totalGradedStudents: number, contador: number }>);
+        }, {} as Record<number, { totalStudentViews: number, contador: number }>);
 
         // Criar um array de médias para todas as classrooms, incluindo as sem notas
         const mediaPorClassroom = classroomsData.map((classroom: ClassroomInterface) => {
@@ -84,7 +84,7 @@ const getStatisticsByClassroom = (req: Request, res: Response) => {
             return {
                 classroomId: classroom.id,
                 classroomName: classroom.name,
-                mediaClassroomGrades: classroomStats ? (classroomStats.totalGradedStudents / classroomStats.contador) : null,
+                mediaClassroomGrades: classroomStats ? (classroomStats.totalStudentViews / classroomStats.contador) : null,
             };
         });
 
@@ -108,7 +108,7 @@ const getStatisticsByClassroom = (req: Request, res: Response) => {
 };
 
 export {
-    createOrUpdateGradedStudent,
-    updateGradedStudent,
+    createOrUpdateStudentView,
+    updateStudentView,
     getStatisticsByClassroom
 };
