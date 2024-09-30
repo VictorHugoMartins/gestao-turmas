@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useClassroom } from '../../contexts/ClassroomContext';
+import { useSubject } from '../../contexts/SubjectContext';
 import {
   IconButton,
   Menu,
@@ -11,57 +11,57 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import GenericModal from './GenericModal';
-import { Classroom } from '../../types';
+import { Subject } from '../../types';
 
-interface ClassroomMenuModalProps {
-  classroom: Classroom;
+interface SubjectMenuModalProps {
+  subject: Subject;
 }
 
-const ClassroomMenuModal: React.FC<ClassroomMenuModalProps> = ({
-  classroom,
+const SubjectMenuModal: React.FC<SubjectMenuModalProps> = ({
+  subject,
 }) => {
-  const { classrooms, criarClassroom, editarClassroom, removerClassroom } =
-    useClassroom();
-  const [novaClassroom, setNovaClassroom] = useState<string>('');
+  const { subjects, criarSubject, editarSubject, removerSubject } =
+    useSubject();
+  const [novaSubject, setNovaSubject] = useState<string>('');
   const [activeTab, setActiveTab] = useState<number>(0);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [classroomEdit, setClassroomEdit] = useState<number | null>(null);
+  const [subjectEdit, setSubjectEdit] = useState<number | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleCloseModal = () => {
     setOpenModal(false);
     setEditMode(false);
-    setClassroomEdit(null);
-    setNovaClassroom('');
+    setSubjectEdit(null);
+    setNovaSubject('');
   };
 
   const handleOpenMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
-    classroomId: number,
+    subjectId: number,
   ) => {
     setAnchorEl(event.currentTarget);
-    setClassroomEdit(classroomId);
+    setSubjectEdit(subjectId);
   };
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
 
-  const handleEditClassroom = () => {
-    const classroom = classrooms.find((t) => t.id === classroomEdit);
-    if (classroom) {
-      setNovaClassroom(classroom.name);
+  const handleEditSubject = () => {
+    const subject = subjects.find((t) => t.id === subjectEdit);
+    if (subject) {
+      setNovaSubject(subject.name);
       setEditMode(true);
       setOpenModal(true);
     }
     handleCloseMenu();
   };
 
-  const handleDeleteClassroom = () => {
-    if (classroomEdit) {
-      removerClassroom(classroomEdit);
-      if (activeTab === classrooms.length - 1) {
+  const handleDeleteSubject = () => {
+    if (subjectEdit) {
+      removerSubject(subjectEdit);
+      if (activeTab === subjects.length - 1) {
         setActiveTab(activeTab - 1);
       }
     }
@@ -69,21 +69,21 @@ const ClassroomMenuModal: React.FC<ClassroomMenuModalProps> = ({
   };
 
   const handleSubmit = () => {
-    if (editMode && classroomEdit) {
-      editarClassroom(classroomEdit, novaClassroom);
+    if (editMode && subjectEdit) {
+      editarSubject(subjectEdit, novaSubject);
     } else {
-      criarClassroom(novaClassroom);
+      criarSubject(novaSubject);
     }
     handleCloseModal();
   };
 
   return (
     <>
-      {classroom?.id && classroom.id > -1 && (
+      {subject?.id && subject.id > -1 && (
         <IconButton
           size="small"
-          onClick={(e) => handleOpenMenu(e, classroom.id ?? -1)}
-          className="classroom-list-settings-icon"
+          onClick={(e) => handleOpenMenu(e, subject.id ?? -1)}
+          className="subject-list-settings-icon"
         >
           <SettingsIcon />
         </IconButton>
@@ -98,9 +98,9 @@ const ClassroomMenuModal: React.FC<ClassroomMenuModalProps> = ({
       >
         <TextField
           label="Nome da Turma"
-          value={novaClassroom}
-          onChange={(e) => setNovaClassroom(e.target.value)}
-          className="classroom-list-textfield"
+          value={novaSubject}
+          onChange={(e) => setNovaSubject(e.target.value)}
+          className="subject-list-textfield"
           fullWidth
         />
       </GenericModal>
@@ -110,13 +110,13 @@ const ClassroomMenuModal: React.FC<ClassroomMenuModalProps> = ({
         open={Boolean(anchorEl)}
         onClose={handleCloseMenu}
       >
-        <MenuItem onClick={handleEditClassroom}>
+        <MenuItem onClick={handleEditSubject}>
           <ListItemIcon>
             <EditIcon fontSize="small" />
           </ListItemIcon>
           Editar
         </MenuItem>
-        <MenuItem onClick={handleDeleteClassroom}>
+        <MenuItem onClick={handleDeleteSubject}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
@@ -127,4 +127,4 @@ const ClassroomMenuModal: React.FC<ClassroomMenuModalProps> = ({
   );
 };
 
-export default ClassroomMenuModal;
+export default SubjectMenuModal;

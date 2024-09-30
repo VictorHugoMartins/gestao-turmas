@@ -1,46 +1,46 @@
 import React, { useState } from 'react';
 import { Button, TextField } from '@mui/material';
 import GenericModal from './GenericModal';
-import { useClassroom } from '../../contexts/ClassroomContext';
+import { useSubject } from '../../contexts/SubjectContext';
 
 const NewClassModal: React.FC = () => {
-  const { criarClassroom } = useClassroom();
-  const [novaClassroom, setNovaClassroom] = useState<{
+  const { criarSubject } = useSubject();
+  const [novaSubject, setNovaSubject] = useState<{
     id: number;
     name: string;
   }>({ id: 0, name: '' });
-  const [openClassroomModal, setOpenClassroomModal] = useState(false);
+  const [openSubjectModal, setOpenSubjectModal] = useState(false);
 
-  const handleOpenClassroomModal = () => setOpenClassroomModal(true);
-  const handleCloseClassroomModal = () => {
-    setOpenClassroomModal(false);
-    setNovaClassroom({ id: 0, name: '' });
+  const handleOpenSubjectModal = () => setOpenSubjectModal(true);
+  const handleCloseSubjectModal = () => {
+    setOpenSubjectModal(false);
+    setNovaSubject({ id: 0, name: '' });
   };
 
-  const handleSubmitNovaClassroom = async () => {
-    await criarClassroom(novaClassroom.name);
-    handleCloseClassroomModal();
+  const handleSubmitNovaSubject = async () => {
+    await criarSubject(novaSubject.name);
+    handleCloseSubjectModal();
   };
 
   return (
     <>
-      <Button variant="contained" onClick={handleOpenClassroomModal}>
+      <Button variant="contained" onClick={handleOpenSubjectModal}>
         Criar Nova Turma
       </Button>
 
       <GenericModal
-        open={openClassroomModal}
-        onClose={handleCloseClassroomModal}
-        onSubmit={handleSubmitNovaClassroom}
+        open={openSubjectModal}
+        onClose={handleCloseSubjectModal}
+        onSubmit={handleSubmitNovaSubject}
         title="Criar Nova Turma"
         submitText="Adicionar Turma"
       >
         <TextField
           label="Nome da Turma"
           fullWidth
-          value={novaClassroom.name}
+          value={novaSubject.name}
           onChange={(e) =>
-            setNovaClassroom({ ...novaClassroom, name: e.target.value })
+            setNovaSubject({ ...novaSubject, name: e.target.value })
           }
           sx={{ mb: 2 }}
         />

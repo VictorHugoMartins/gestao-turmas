@@ -4,14 +4,14 @@ import { Student, StudentView } from '../types';
 
 interface StudentContextProps {
   students: Student[];
-  buscarStudents: (classroomId: number) => void;
+  buscarStudents: (subjectId: number) => void;
   editarStudent: (id: number, student: Student) => void;
   editarStudentGrade: (
     grade: StudentView,
-    classroomId: number,
+    subjectId: number,
     notaValue: number,
   ) => void;
-  removerStudent: (id: number, classroomId: number) => void;
+  removerStudent: (id: number, subjectId: number) => void;
 }
 
 const StudentContext = createContext<StudentContextProps | undefined>(
@@ -31,16 +31,16 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [students, setStudents] = useState<Student[]>([]);
 
-  const buscarStudents = async (classroomId: number) => {
+  const buscarStudents = async (subjectId: number) => {
     try {
       let response;
-      if (classroomId === -1) {
+      if (subjectId === -1) {
         response = await axios.get(
           `http://localhost:5000/api/students/ListarMediaStudentViewsFrequency`,
         );
       } else {
         response = await axios.get(
-          `http://localhost:5000/api/classrooms/${classroomId}/ListarStudents`,
+          `http://localhost:5000/api/subjects/${subjectId}/ListarStudents`,
         );
       }
 
@@ -76,14 +76,14 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const editarStudentGrade = async (
     grade: StudentView,
-    classroomId: number,
+    subjectId: number,
     notaValue: number,
   ) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/grades/${grade.classroomId}/students/${grade.studentId}`,
+        `http://localhost:5000/api/grades/${grade.subjectId}/students/${grade.studentId}`,
         {
-          classroomId,
+          subjectId,
           studentId: grade.studentId,
           grade: notaValue,
         },
@@ -96,13 +96,13 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const removerStudent = async (id: number, classroomId: number) => {
+  const removerStudent = async (id: number, subjectId: number) => {
     try {
       const response = await axios.delete(
         `http://localhost:5000/api/students/${id}`,
       );
       if (response.data && response.data.data) {
-        await buscarStudents(classroomId);
+        await buscarStudents(subjectId);
       } else {
         alert('Formato de resposta inesperado ao remover aluno');
       }

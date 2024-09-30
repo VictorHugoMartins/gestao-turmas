@@ -1,9 +1,9 @@
-export interface ClassroomInterface {
+export interface SubjectInterface {
   id: number;
   name: string;
 }
 
-class Classroom implements ClassroomInterface {
+class Subject implements SubjectInterface {
   id: number;
   name: string;
 
@@ -13,4 +13,4 @@ class Classroom implements ClassroomInterface {
   }
 }
 
-export default Classroom;
+export default Subject;

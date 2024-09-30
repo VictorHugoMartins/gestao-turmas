@@ -18,7 +18,7 @@ import { StudentView } from '../../types';
 import { useStudentView } from '../../contexts/StudentViewContext';
 
 interface StudentViewListProps {
-  classroomId: number;
+  subjectId: number;
   mediaGeral: number;
 }
 
@@ -29,7 +29,7 @@ const StyledImage = styled('img')({
   objectFit: 'cover',
 });
 
-const StudentViewList: React.FC<StudentViewListProps> = ({ classroomId }) => {
+const StudentViewList: React.FC<StudentViewListProps> = ({ subjectId }) => {
   const { notas, buscarNotas } = useStudentView();
   const { values } = useStatistics();
 
@@ -38,8 +38,8 @@ const StudentViewList: React.FC<StudentViewListProps> = ({ classroomId }) => {
   const [minFrequency, setMinFrequency] = useState<number | ''>('');
 
   useEffect(() => {
-    buscarNotas(classroomId);
-  }, [classroomId, buscarNotas]);
+    buscarNotas(subjectId);
+  }, [subjectId, buscarNotas]);
 
   // Lógica de Filtro
   const filteredGrades = notas.filter(
@@ -49,10 +49,10 @@ const StudentViewList: React.FC<StudentViewListProps> = ({ classroomId }) => {
       (minFrequency === '' || grade.frequency >= minFrequency), // Filtro de frequência mínima
   );
 
-  // Obtendo a média da turma correspondente ao classroomId
-  const classroomAverage = values.mediaPorClassroom.find(
-    (item) => item.classroomId === classroomId,
-  )?.mediaClassroomGrades;
+  // Obtendo a média da turma correspondente ao subjectId
+  const subjectAverage = values.mediaPorSubject.find(
+    (item) => item.subjectId === subjectId,
+  )?.mediaSubjectGrades;
 
   return (
     <>
@@ -98,11 +98,11 @@ const StudentViewList: React.FC<StudentViewListProps> = ({ classroomId }) => {
           </TableHead>
           <TableBody>
             {filteredGrades.map((grade: StudentView) => {
-              let betterThanClassroomAverage =
-                classroomAverage && grade.grade > classroomAverage;
+              let betterThanSubjectAverage =
+                subjectAverage && grade.grade > subjectAverage;
               let betterThanGeralAverage =
-                grade.classroomId === -1 &&
-                grade.grade > values.mediaClassroomGrades;
+                grade.subjectId === -1 &&
+                grade.grade > values.mediaSubjectGrades;
 
               return (
                 <TableRow key={grade.id}>
@@ -117,7 +117,7 @@ const StudentViewList: React.FC<StudentViewListProps> = ({ classroomId }) => {
                     <strong
                       style={{
                         color:
-                          betterThanClassroomAverage || betterThanGeralAverage
+                          betterThanSubjectAverage || betterThanGeralAverage
                             ? '#43d669'
                             : 'inherit',
                       }}
@@ -135,9 +135,9 @@ const StudentViewList: React.FC<StudentViewListProps> = ({ classroomId }) => {
                     </strong>
                   </TableCell>
                   <TableCell>
-                    {classroomId > -1 ? (
+                    {subjectId > -1 ? (
                       <GradeForm
-                        classroomId={classroomId}
+                        subjectId={subjectId}
                         id={grade.id ?? -1}
                         studentId={grade.studentId}
                         grade={grade}
@@ -146,7 +146,7 @@ const StudentViewList: React.FC<StudentViewListProps> = ({ classroomId }) => {
                       <EditStudentModal
                         student={grade}
                         studentId={grade.studentId}
-                        classroomId={classroomId}
+                        subjectId={subjectId}
                       />
                     )}
                   </TableCell>

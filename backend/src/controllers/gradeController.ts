@@ -3,14 +3,14 @@ import {
   getStudentViews,
   saveStudentViews,
 } from "../repositories/gradeRepository";
-import { ClassroomInterface } from "../models/Classroom";
-import { getClassrooms } from "../repositories/classroomRepository";
+import { SubjectInterface } from "../models/Subject";
+import { getSubjects } from "../repositories/subjectRepository";
 import Grade, { GradeInterface } from "../models/Grade";
 
-// Criar ou atualizar uma grade para um student em uma classroom
+// Criar ou atualizar uma grade para um student em uma subject
 const createOrUpdateStudentView = (req: Request, res: Response) => {
   const { grade } = req.body;
-  const classroomId = parseInt(req.params.classroomId);
+  const subjectId = parseInt(req.params.subjectId);
   const studentId = parseInt(req.params.studentId);
 
   const grades: Grade[] = getStudentViews();
@@ -24,7 +24,7 @@ const createOrUpdateStudentView = (req: Request, res: Response) => {
   const novaStudentView: Grade = {
     id: grades.length > 0 ? grades[grades.length - 1].id + 1 : 1,
     studentId: studentId,
-    classroomId: classroomId,
+    subjectId: subjectId,
     grade: grade,
   };
 
@@ -35,10 +35,10 @@ const createOrUpdateStudentView = (req: Request, res: Response) => {
     .json({ message: "Dados criados com sucesso!", data: novaStudentView });
 };
 
-// Atualizar uma nota existente para um student em uma classroom
+// Atualizar uma nota existente para um student em uma subject
 const updateStudentView = (req: Request, res: Response) => {
   const { grade } = req.body;
-  const classroomId = parseInt(req.params.classroomId);
+  const subjectId = parseInt(req.params.subjectId);
   const studentId = parseInt(req.params.studentId);
 
   let grades: Grade[] = getStudentViews();
@@ -50,7 +50,7 @@ const updateStudentView = (req: Request, res: Response) => {
   }
 
   const gradeExistente = grades?.find(
-    (n) => n.studentId === studentId && n.classroomId === classroomId,
+    (n) => n.studentId === studentId && n.subjectId === subjectId,
   );
 
   if (gradeExistente) {
@@ -68,10 +68,10 @@ const updateStudentView = (req: Request, res: Response) => {
   }
 };
 
-const getStatisticsByClassroom = (req: Request, res: Response) => {
+const getStatisticsBySubject = (req: Request, res: Response) => {
   try {
     const gradesData: GradeInterface[] = getStudentViews();
-    const classroomsData: ClassroomInterface[] = getClassrooms();
+    const subjectsData: SubjectInterface[] = getSubjects();
 
     if (!gradesData.length) {
       return res
@@ -80,55 +80,55 @@ const getStatisticsByClassroom = (req: Request, res: Response) => {
     }
 
     // Calcular médias por Turma
-    const mediasPorClassroom = gradesData.reduce(
+    const mediasPorSubject = gradesData.reduce(
       (acc, grade) => {
-        const { classroomId, grade: gradeStudent } = grade;
+        const { subjectId, grade: gradeStudent } = grade;
 
-        if (!acc[classroomId]) {
-          acc[classroomId] = {
+        if (!acc[subjectId]) {
+          acc[subjectId] = {
             totalStudentViews: 0,
             contador: 0,
           };
         }
 
-        acc[classroomId].totalStudentViews += gradeStudent || 0;
-        acc[classroomId].contador += 1;
+        acc[subjectId].totalStudentViews += gradeStudent || 0;
+        acc[subjectId].contador += 1;
 
         return acc;
       },
       {} as Record<number, { totalStudentViews: number; contador: number }>,
     );
 
-    // Criar um array de médias para todas as classrooms, incluindo as sem notas
-    const mediaPorClassroom = classroomsData.map(
-      (classroom: ClassroomInterface) => {
-        const classroomStats = mediasPorClassroom[classroom.id];
+    // Criar um array de médias para todas as subjects, incluindo as sem notas
+    const mediaPorSubject = subjectsData.map(
+      (subject: SubjectInterface) => {
+        const subjectStats = mediasPorSubject[subject.id];
 
         return {
-          classroomId: classroom.id,
-          classroomName: classroom.name,
-          mediaClassroomGrades: classroomStats
-            ? classroomStats.totalStudentViews / classroomStats.contador
+          subjectId: subject.id,
+          subjectName: subject.name,
+          mediaSubjectGrades: subjectStats
+            ? subjectStats.totalStudentViews / subjectStats.contador
             : null,
         };
       },
     );
 
     // Calcular a média geral (soma das médias de cada turma / quantidade de turmas)
-    const somaMediasPorClassroom = mediaPorClassroom.reduce(
-      (sum, classroom) => {
-        return sum + (classroom.mediaClassroomGrades || 0);
+    const somaMediasPorSubject = mediaPorSubject.reduce(
+      (sum, subject) => {
+        return sum + (subject.mediaSubjectGrades || 0);
       },
       0,
     );
 
-    const mediaClassroomGrades = somaMediasPorClassroom / classroomsData.length;
+    const mediaSubjectGrades = somaMediasPorSubject / subjectsData.length;
 
     res.status(200).json({
       message: "Requisição realizada com sucesso!",
       data: {
-        mediaPorClassroom,
-        mediaClassroomGrades, // Média geral
+        mediaPorSubject,
+        mediaSubjectGrades, // Média geral
       },
     });
   } catch (error) {
@@ -139,5 +139,5 @@ const getStatisticsByClassroom = (req: Request, res: Response) => {
 export {
   createOrUpdateStudentView,
   updateStudentView,
-  getStatisticsByClassroom,
+  getStatisticsBySubject,
 };

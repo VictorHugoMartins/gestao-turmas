@@ -7,13 +7,13 @@ import { useStudent } from '../../contexts/StudentContext';
 interface EditStudentModalProps {
   student: Student;
   studentId: number;
-  classroomId: number;
+  subjectId: number;
 }
 
 const EditStudentModal: React.FC<EditStudentModalProps> = ({
   student,
   studentId,
-  classroomId,
+  subjectId,
 }) => {
   const { editarStudent, removerStudent } = useStudent();
   const [name, setNome] = useState<string>(student.name);
@@ -45,7 +45,7 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
 
   const handleRemoveStudent = async () => {
     try {
-      await removerStudent(studentId, classroomId);
+      await removerStudent(studentId, subjectId);
       handleCloseEditStudentModal();
     } catch (error) {
       alert('Erro ao remover aluno:');

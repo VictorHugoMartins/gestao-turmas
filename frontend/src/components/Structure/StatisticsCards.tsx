@@ -26,18 +26,18 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ reload }) => {
           <Card sx={{ p: 2 }}>
             <Typography variant="caption">Nota Média das Turmas</Typography>
             <Typography variant="h5">
-              {values.mediaClassroomGrades?.toFixed(2)}
+              {values.mediaSubjectGrades?.toFixed(2)}
             </Typography>
           </Card>
         </Grid>
-        {values.mediaPorClassroom?.map((item) => (
+        {values.mediaPorSubject?.map((item) => (
           <Grid item xs={12} sm={6} md={2}>
             <Card sx={{ p: 2 }}>
               <Typography variant="caption">
-                Nota média de {item.classroomName}
+                Nota média de {item.subjectName}
               </Typography>
               <Typography variant="h5">
-                {item.mediaClassroomGrades?.toFixed(2) ?? '--'}
+                {item.mediaSubjectGrades?.toFixed(2) ?? '--'}
               </Typography>
             </Card>
           </Grid>

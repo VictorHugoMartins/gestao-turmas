@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { useClassroom } from '../../contexts/ClassroomContext';
 import { Tabs, Tab, Box, Typography } from '@mui/material';
 import { useStatistics } from '../../contexts/StatisticsContext';
 import StudentViewList from './StudentViewList';
-import ClassroomMenuModal from '../ModalForm/ClassroomMenuModal';
+import { useSubject } from '../../contexts/SubjectContext';
+import SubjectMenuModal from '../ModalForm/SubjectMenuModal';
 
-interface ClassroomListProps {}
+interface SubjectListProps {}
 
-const ClassroomList: React.FC<ClassroomListProps> = () => {
-  const { classrooms } = useClassroom();
+const SubjectList: React.FC<SubjectListProps> = () => {
+  const { subjects } = useSubject();
   const { values } = useStatistics();
   const [activeTab, setActiveTab] = useState<number>(0);
   const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
@@ -16,8 +16,8 @@ const ClassroomList: React.FC<ClassroomListProps> = () => {
   };
 
   return (
-    <div className="container classroom-list-container">
-      <Typography variant="h4" gutterBottom className="classroom-list-title">
+    <div className="container subject-list-container">
+      <Typography variant="h4" gutterBottom className="subject-list-title">
         Turmas
       </Typography>
 
@@ -43,27 +43,27 @@ const ClassroomList: React.FC<ClassroomListProps> = () => {
       <Tabs
         value={activeTab}
         onChange={handleChangeTab}
-        aria-label="tabs de classrooms"
-        className="classroom-list-tabs"
+        aria-label="tabs de subjects"
+        className="subject-list-tabs"
       >
-        {classrooms.map((classroom) => (
+        {subjects.map((subject) => (
           <Tab
-            key={classroom.id}
+            key={subject.id}
             label={
-              <Box className="classroom-list-tab">
-                {classroom.name}
-                <ClassroomMenuModal classroom={classroom} />
+              <Box className="subject-list-tab">
+                {subject.name}
+                <SubjectMenuModal subject={subject} />
               </Box>
             }
           />
         ))}
       </Tabs>
 
-      {activeTab >= 0 && activeTab < classrooms.length && (
-        <Box className="classroom-list-student-list">
+      {activeTab >= 0 && activeTab < subjects.length && (
+        <Box className="subject-list-student-list">
           <StudentViewList
-            classroomId={classrooms[activeTab]?.id ?? -1}
-            mediaGeral={values.mediaClassroomGrades}
+            subjectId={subjects[activeTab]?.id ?? -1}
+            mediaGeral={values.mediaSubjectGrades}
           />
         </Box>
       )}
@@ -71,4 +71,4 @@ const ClassroomList: React.FC<ClassroomListProps> = () => {
   );
 };
 
-export default ClassroomList;
+export default SubjectList;

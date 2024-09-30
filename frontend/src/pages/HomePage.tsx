@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Box, Container, Grid } from '@mui/material';
 import StatisticCards from '../components/Structure/StatisticsCards';
-import ClassroomList from '../components/List/ClassroomList';
+import SubjectList from '../components/List/SubjectList';
 import NewClassModal from '../components/ModalForm/NewClassModal';
 import NewStudentModal from '../components/ModalForm/NewStudentModal';
 import Header from '../components/Structure/Header/Header';
 import { useStudent } from '../contexts/StudentContext';
-import { useClassroom } from '../contexts/ClassroomContext';
+import { useSubject } from '../contexts/SubjectContext';
 
 const Homepage: React.FC = () => {
   const { students } = useStudent();
-  const { classrooms } = useClassroom();
+  const { subjects } = useSubject();
   const [reload, setReload] = useState<boolean>(false);
 
   useEffect(() => {
     setReload(true);
-  }, [students, classrooms]);
+  }, [students, subjects]);
 
   return (
     <Container sx={{ p: 2 }} maxWidth={false}>
@@ -45,7 +45,7 @@ const Homepage: React.FC = () => {
         sx={{ p: 2, width: { lg: '90%', xs: '100%' } }}
         maxWidth={false}
       >
-        <ClassroomList />
+        <SubjectList />
       </Container>
     </Container>
   );

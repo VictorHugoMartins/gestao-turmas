@@ -7,12 +7,12 @@ import { useStudent } from '../../contexts/StudentContext';
 
 interface EditGradeModalProps {
   grade: StudentView;
-  classroomId: number;
+  subjectId: number;
 }
 
 const EditGradeModal: React.FC<EditGradeModalProps> = ({
   grade,
-  classroomId,
+  subjectId,
 }) => {
   const { buscarStudents } = useStudent();
   const [notaValue, setNotaValue] = useState<number>(grade.grade);
@@ -31,7 +31,7 @@ const EditGradeModal: React.FC<EditGradeModalProps> = ({
   const handleSubmitNota = async () => {
     try {
       await axios.put(
-        `http://localhost:5000/api/classrooms/${classroomId}/students/${grade.studentId}/notas`,
+        `http://localhost:5000/api/subjects/${subjectId}/students/${grade.studentId}/notas`,
         { grade: notaValue },
       );
       alert('Nota atualizada com sucesso!');

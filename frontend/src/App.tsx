@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { ClassroomProvider } from './contexts/ClassroomContext';
+import { SubjectProvider } from './contexts/SubjectContext';
 import { StudentProvider } from './contexts/StudentContext';
 import { StatisticsProvider } from './contexts/StatisticsContext';
 import { StudentViewProvider } from './contexts/StudentViewContext';
@@ -31,7 +31,7 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <StatisticsProvider>
-        <ClassroomProvider>
+        <SubjectProvider>
           <StudentProvider>
             <StudentViewProvider>
               <Router>
@@ -41,7 +41,7 @@ const App: React.FC = () => {
               </Router>
             </StudentViewProvider>
           </StudentProvider>
-        </ClassroomProvider>
+        </SubjectProvider>
       </StatisticsProvider>
     </ThemeProvider>
   );

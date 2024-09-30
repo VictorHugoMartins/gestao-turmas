@@ -5,7 +5,7 @@ import { useStudent } from '../../contexts/StudentContext';
 
 interface NotaFormProps {
   grade: StudentView;
-  classroomId: number;
+  subjectId: number;
   id: number;
   studentId: number;
 }
@@ -22,7 +22,7 @@ const style = {
   borderRadius: 2,
 };
 
-const GradeForm: React.FC<NotaFormProps> = ({ grade, classroomId, id }) => {
+const GradeForm: React.FC<NotaFormProps> = ({ grade, subjectId, id }) => {
   const { editarStudentGrade } = useStudent();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [notaValue, setNotaValue] = useState<number>(grade.grade);
@@ -42,7 +42,7 @@ const GradeForm: React.FC<NotaFormProps> = ({ grade, classroomId, id }) => {
   };
 
   const handleSubmit = async () => {
-    await editarStudentGrade(grade, classroomId, notaValue);
+    await editarStudentGrade(grade, subjectId, notaValue);
     closeModal();
   };
 

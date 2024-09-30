@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button, TextField, Grid } from '@mui/material';
 import GenericModal from './GenericModal';
-import { Classroom } from '../../types';
+import { Subject } from '../../types';
 import axios from 'axios';
 
 export interface StudentView {
-  classroomId: number;
+  subjectId: number;
   grade: number;
   frequency: number;
 }
@@ -26,23 +26,23 @@ const NewStudentModal: React.FC = () => {
     studentViews: [],
     frequency: 0,
   });
-  const [classrooms, setClassrooms] = useState<Classroom[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   const [openStudentModal, setOpenStudentModal] = useState(false);
 
-  const buscarClassRooms = async () => {
+  const buscarSubjects = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/classrooms/ListarClassRooms`,
+        `http://localhost:5000/api/subjects/ListarSubjects`,
       );
       if (Array.isArray(response.data?.data)) {
-        setClassrooms(response.data.data);
+        setSubjects(response.data.data);
       } else if (response.data.message) {
         alert(response.data.message);
-        setClassrooms([]);
+        setSubjects([]);
       }
     } catch (error) {
       alert('Erro ao buscar turmas');
-      setClassrooms([]);
+      setSubjects([]);
     }
   };
 
@@ -63,19 +63,19 @@ const NewStudentModal: React.FC = () => {
   };
 
   useEffect(() => {
-    buscarClassRooms();
+    buscarSubjects();
   }, []);
 
   useEffect(() => {
-    if (classrooms.length > 0 && novoStudent.studentViews.length === 0) {
-      const initialGrades: any = classrooms.map((classroom) => ({
-        classroomId: classroom.id,
+    if (subjects.length > 0 && novoStudent.studentViews.length === 0) {
+      const initialGrades: any = subjects.map((subject) => ({
+        subjectId: subject.id,
         grade: 0,
         frequency: 0,
       }));
       setNovoStudent((prev) => ({ ...prev, studentViews: initialGrades }));
     }
-  }, [classrooms, novoStudent.studentViews.length]); // Adicionada dependência 'novoStudent.studentViews.length'
+  }, [subjects, novoStudent.studentViews.length]); // Adicionada dependência 'novoStudent.studentViews.length'
 
   const handleOpenStudentModal = () => setOpenStudentModal(true);
   const handleCloseStudentModal = () => {
@@ -94,11 +94,11 @@ const NewStudentModal: React.FC = () => {
     handleCloseStudentModal();
   };
 
-  const handleGradeChange = (classroomId: number, grade: number) => {
+  const handleGradeChange = (subjectId: number, grade: number) => {
     setNovoStudent((prev) => ({
       ...prev,
       studentViews: prev.studentViews.map((input) =>
-        input.classroomId === classroomId ? { ...input, grade } : input,
+        input.subjectId === subjectId ? { ...input, grade } : input,
       ),
     }));
   };
@@ -152,21 +152,21 @@ const NewStudentModal: React.FC = () => {
         />
 
         <Grid container spacing={2}>
-          {classrooms.map(
-            (classroom, key) =>
+          {subjects.map(
+            (subject, key) =>
               key > 0 && (
-                <Grid item xs={4} key={classroom.id}>
+                <Grid item xs={4} key={subject.id}>
                   <TextField
-                    label={`Nota da Turma ${classroom.name}`}
+                    label={`Nota da Turma ${subject.name}`}
                     type="number"
                     value={
                       novoStudent.studentViews.find(
-                        (input) => input.classroomId === classroom.id,
+                        (input) => input.subjectId === subject.id,
                       )?.grade || 0
                     }
                     onChange={(e) =>
                       handleGradeChange(
-                        classroom.id ?? -1,
+                        subject.id ?? -1,
                         Number(e.target.value),
                       )
                     }

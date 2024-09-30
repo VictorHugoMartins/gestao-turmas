@@ -4,7 +4,7 @@ import { StudentView } from '../types';
 
 interface StudentViewContextProps {
   notas: StudentView[];
-  buscarNotas: (classroomId: number) => void;
+  buscarNotas: (subjectId: number) => void;
 }
 
 const StudentViewContext = createContext<StudentViewContextProps | undefined>(
@@ -26,17 +26,17 @@ export const StudentViewProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [notas, setNotas] = useState<StudentView[]>([]);
 
-  const buscarNotas = async (classroomId: number) => {
+  const buscarNotas = async (subjectId: number) => {
     try {
       setNotas([]);
       let response;
-      if (classroomId === -1) {
+      if (subjectId === -1) {
         response = await axios.get(
           `http://localhost:5000/api/students/ListarMediaStudentViewsFrequency`,
         );
       } else {
         response = await axios.get(
-          `http://localhost:5000/api/classrooms/${classroomId}/ListarStudents`,
+          `http://localhost:5000/api/subjects/${subjectId}/ListarStudents`,
         );
       }
       setNotas(response.data.data || []);

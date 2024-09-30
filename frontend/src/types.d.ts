@@ -5,7 +5,7 @@ export interface Student {
   frequency?: number;
 }
 
-export interface Classroom {
+export interface Subject {
   id?: number;
   name: string;
 }
@@ -13,8 +13,8 @@ export interface Classroom {
 export interface StudentView {
   id?: number;
   studentId: number;
-  classroomId: number;
-  classroomName: string;
+  subjectId: number;
+  subjectName: string;
   name: string;
   grade: number;
   image_url: string;

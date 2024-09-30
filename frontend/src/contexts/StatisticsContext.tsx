@@ -2,11 +2,11 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
 type CardsResumeValues = {
-  mediaClassroomGrades: number;
-  mediaPorClassroom: {
-    classroomId: number;
-    classroomName: string;
-    mediaClassroomGrades: number;
+  mediaSubjectGrades: number;
+  mediaPorSubject: {
+    subjectId: number;
+    subjectName: string;
+    mediaSubjectGrades: number;
   }[];
 };
 
@@ -23,8 +23,8 @@ export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [values, setValues] = useState<CardsResumeValues>({
-    mediaClassroomGrades: 0,
-    mediaPorClassroom: [],
+    mediaSubjectGrades: 0,
+    mediaPorSubject: [],
   });
 
   const fetchStatistics = async () => {

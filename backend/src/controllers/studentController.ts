@@ -5,8 +5,8 @@ import {
   saveStudentViews,
 } from "../repositories/gradeRepository";
 import Student from "../models/Student";
-import Classroom from "../models/Classroom";
-import { getClassrooms } from "../repositories/classroomRepository";
+import Subject from "../models/Subject";
+import { getSubjects } from "../repositories/subjectRepository";
 import Grade from "../models/Grade";
 
 const defaultImgUrl =
@@ -15,7 +15,7 @@ const defaultImgUrl =
 // Criar ou atualizar um student
 const createStudent = (req: Request, res: Response) => {
   const students: Student[] = getStudents();
-  const classrooms: Classroom[] = getClassrooms();
+  const subjects: Subject[] = getSubjects();
   const grades: Grade[] = getStudentViews();
   const { name, image_url, frequency, studentViews } = req.body;
 
@@ -36,16 +36,16 @@ const createStudent = (req: Request, res: Response) => {
   saveStudents(students);
 
   // Para cada turma existente, cria uma nota inicial para o novo aluno
-  classrooms.forEach((classroom) => {
+  subjects.forEach((subject) => {
     const gradeInput = studentViews?.find(
-      (input: { classroomId: number }) => input.classroomId === classroom.id,
+      (input: { subjectId: number }) => input.subjectId === subject.id,
     );
 
     if (gradeInput) {
       const novaNota: Grade = {
         id: grades.length > 0 ? grades[grades.length - 1].id + 1 : 1,
         studentId: novoStudent.id,
-        classroomId: classroom.id,
+        subjectId: subject.id,
         grade: gradeInput ? gradeInput.grade : 0,
       };
 
@@ -103,20 +103,20 @@ const deleteStudent = (req: Request, res: Response) => {
 
 const listarStudents = (req: Request, res: Response) => {
   try {
-    const classroomId = parseInt(req.params.classroomId);
+    const subjectId = parseInt(req.params.subjectId);
     const students: Student[] = getStudents();
     const grades = getStudentViews();
-    const classrooms = getClassrooms();
+    const subjects = getSubjects();
 
-    const classroom = classrooms?.find((t: Classroom) => t?.id === classroomId);
-    if (!classroom) {
+    const subject = subjects?.find((t: Subject) => t?.id === subjectId);
+    if (!subject) {
       return res.status(200).json({ message: "Sem dados", data: [] });
     }
 
     const resultado = students.map((student) => {
       const grade = grades?.find(
         (grade: Grade) =>
-          grade.studentId === student.id && grade.classroomId === classroomId,
+          grade.studentId === student.id && grade.subjectId === subjectId,
       );
       return {
         id: grade ? grade.id : null,
@@ -125,8 +125,8 @@ const listarStudents = (req: Request, res: Response) => {
         studentId: student.id,
         grade: grade ? grade.grade : null,
         frequency: student.frequency,
-        classroomId: classroomId,
-        nameClassroom: classroom.name,
+        subjectId: subjectId,
+        nameSubject: subject.name,
       };
     });
 
@@ -150,20 +150,20 @@ const listStudentsMedias = (req: Request, res: Response) => {
     const grades = getStudentViews();
 
     // Mapeia as notas por turma
-    const classroomMap: {
+    const subjectMap: {
       [key: number]: { totalStudentViews: number; totalStudents: number };
     } = {};
 
-    // Itera sobre as notas para agregar as informações por classroom
+    // Itera sobre as notas para agregar as informações por subject
     grades.forEach((grade: Grade) => {
-      if (!classroomMap[grade.classroomId]) {
-        classroomMap[grade.classroomId] = {
+      if (!subjectMap[grade.subjectId]) {
+        subjectMap[grade.subjectId] = {
           totalStudentViews: 0,
           totalStudents: 0,
         };
       }
-      classroomMap[grade.classroomId].totalStudentViews += grade.grade || 0;
-      classroomMap[grade.classroomId].totalStudents += 1; // Incrementa o número de alunos na turma
+      subjectMap[grade.subjectId].totalStudentViews += grade.grade || 0;
+      subjectMap[grade.subjectId].totalStudents += 1; // Incrementa o número de alunos na turma
     });
 
     // Itera sobre os alunos para calcular as médias
@@ -178,8 +178,8 @@ const listStudentsMedias = (req: Request, res: Response) => {
 
       // Soma as notas e conta as turmas
       gradesDoStudent.forEach((grade: Grade) => {
-        const classroomInfo = classroomMap[grade.classroomId];
-        if (classroomInfo) {
+        const subjectInfo = subjectMap[grade.subjectId];
+        if (subjectInfo) {
           somaNotas += grade.grade || 0; // Soma a nota do aluno
           totalTurmas += 1; // Incrementa o número de turmas em que o aluno está
         }
@@ -190,7 +190,7 @@ const listStudentsMedias = (req: Request, res: Response) => {
 
       return {
         studentId: student.id,
-        classroomId: -1,
+        subjectId: -1,
         image_url: student.image_url,
         name: student.name,
         grade: mediaAluno,
