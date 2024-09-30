@@ -50,7 +50,7 @@ export const SubjectProvider: React.FC<{ children: React.ReactNode }> = ({
         { name },
       );
       if (response?.data) {
-        alert('Turma criada com sucesso!');
+        alert('Turma criada com sucesso! Por favor, Atualize a página!');
       }
     } catch (error) {
       alert('Erro ao criar turma:');
@@ -69,7 +69,7 @@ export const SubjectProvider: React.FC<{ children: React.ReactNode }> = ({
             subject.id === id ? response.data : subject,
           ),
         );
-        alert('Turma atualizada com sucesso!');
+        alert('Turma atualizada com sucesso! Por favor, Atualize a página!');
       }
     } catch (error) {
       alert('Erro ao editar turma:');
@@ -80,7 +80,7 @@ export const SubjectProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       await axios.delete(`http://localhost:5000/api/subjects/${id}`);
       setSubjects((prev) => prev.filter((subject) => subject.id !== id));
-      alert('Turma removida com sucesso!');
+      alert('Turma removida com sucesso! Por favor, Atualize a página!');
       buscarSubjects();
     } catch (error) {
       alert('Erro ao remover turma:');

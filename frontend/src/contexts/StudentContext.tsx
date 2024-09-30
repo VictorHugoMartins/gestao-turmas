@@ -89,7 +89,7 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({
         },
       );
       if (response) {
-        alert('Turma atualizada com sucesso!');
+        alert('Turma atualizada com sucesso! Por favor, Atualize a página!');
       }
     } catch (error) {
       alert('Erro ao atualizar notas.');

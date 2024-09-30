@@ -9,15 +9,15 @@ interface StatisticsCardsProps {
 const StatisticsCards: React.FC<StatisticsCardsProps> = ({ reload }) => {
   const { values, fetchStatistics } = useStatistics();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchStatistics();
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await fetchStatistics();
+  //   };
 
-    if (reload) {
-      fetchData();
-    }
-  }, [reload, fetchStatistics]);
+  //   if (reload) {
+  //     fetchData();
+  //   }
+  // }, [reload, fetchStatistics]);
 
   return (
     <Box sx={{ mt: 3 }}>

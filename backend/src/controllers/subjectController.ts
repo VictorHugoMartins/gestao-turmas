@@ -26,7 +26,7 @@ const createSubject = (req: Request, res: Response) => {
   saveSubjects(subjects);
   res
     .status(201)
-    .json({ message: "Turma criada com sucesso!", data: novaSubject });
+    .json({ message: "Turma criada com sucesso! Por favor, Atualize a página!", data: novaSubject });
 };
 
 // Editar uma subject
@@ -45,7 +45,7 @@ const updateSubject = (req: Request, res: Response) => {
   saveSubjects(subjects);
   res
     .status(200)
-    .json({ message: "Turma atualizada com sucesso!", data: subject });
+    .json({ message: "Turma atualizada com sucesso! Por favor, Atualize a página!", data: subject });
 };
 
 // Remover uma subject
@@ -60,7 +60,7 @@ const deleteSubject = (req: Request, res: Response) => {
 
   subjects.splice(subjectIndex, 1);
   saveSubjects(subjects);
-  res.status(200).json({ message: "Turma removida com sucesso!" });
+  res.status(200).json({ message: "Turma removida com sucesso! Por favor, Atualize a página!" });
 };
 
 // Listar subjects
@@ -71,7 +71,7 @@ const listSubjects = (req: Request, res: Response) => {
     name: "RESUMO DAS TURMAS",
   };
   res.json({
-    message: "Requisição realizada com sucesso!",
+    message: "Requisição realizada com sucesso! Por favor, Atualize a página!",
     data: [subjectResumo, ...subjects],
   });
 };

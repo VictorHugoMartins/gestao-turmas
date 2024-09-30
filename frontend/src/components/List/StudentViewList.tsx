@@ -39,7 +39,7 @@ const StudentViewList: React.FC<StudentViewListProps> = ({ subjectId }) => {
 
   useEffect(() => {
     buscarNotas(subjectId);
-  }, [subjectId, buscarNotas]);
+  }, [subjectId]);
 
   // Lógica de Filtro
   const filteredGrades = notas.filter(

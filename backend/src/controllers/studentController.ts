@@ -83,7 +83,7 @@ const updateStudent = (req: Request, res: Response) => {
   saveStudents(students);
   res
     .status(200)
-    .json({ message: "Aluno atualizado com sucesso!", data: student });
+    .json({ message: "Aluno atualizado com sucesso! Por favor, Atualize a página!", data: student });
 };
 
 // Remover um student
@@ -98,7 +98,7 @@ const deleteStudent = (req: Request, res: Response) => {
 
   students.splice(studentIndex, 1);
   saveStudents(students);
-  res.status(200).json({ message: "Aluno removido com sucesso!" });
+  res.status(200).json({ message: "Aluno removido com sucesso! Por favor, Atualize a página!" });
 };
 
 const listarStudents = (req: Request, res: Response) => {
@@ -135,7 +135,7 @@ const listarStudents = (req: Request, res: Response) => {
     );
 
     res.json({
-      message: "Requisição realizada com sucesso!",
+      message: "Requisição realizada com sucesso! Por favor, Atualize a página!",
       data: resultadoOrdenado,
     });
   } catch (error) {
@@ -204,7 +204,7 @@ const listStudentsMedias = (req: Request, res: Response) => {
     );
 
     res.json({
-      message: "Requisição realizada com sucesso!",
+      message: "Requisição realizada com sucesso! Por favor, Atualize a página!",
       data: resultadoOrdenado,
     });
   } catch (error) {

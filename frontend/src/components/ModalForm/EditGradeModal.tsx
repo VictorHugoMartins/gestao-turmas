@@ -34,7 +34,7 @@ const EditGradeModal: React.FC<EditGradeModalProps> = ({
         `http://localhost:5000/api/subjects/${subjectId}/students/${grade.studentId}/notas`,
         { grade: notaValue },
       );
-      alert('Nota atualizada com sucesso!');
+      alert('Nota atualizada com sucesso! Por favor, Atualize a página!');
     } catch (error) {
       alert('Erro ao atualizar notas.');
     }

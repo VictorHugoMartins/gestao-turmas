@@ -32,7 +32,7 @@ const createOrUpdateStudentView = (req: Request, res: Response) => {
   saveStudentViews(grades);
   return res
     .status(201)
-    .json({ message: "Dados criados com sucesso!", data: novaStudentView });
+    .json({ message: "Dados criados com sucesso! Por favor, Atualize a página!", data: novaStudentView });
 };
 
 // Atualizar uma nota existente para um student em uma subject
@@ -58,7 +58,7 @@ const updateStudentView = (req: Request, res: Response) => {
     saveStudentViews(grades);
     return res
       .status(200)
-      .json({ message: "Nota atualizada com sucesso!", data: gradeExistente });
+      .json({ message: "Nota atualizada com sucesso! Por favor, Atualize a página!", data: gradeExistente });
   } else {
     return res
       .status(404)
@@ -125,7 +125,7 @@ const getStatisticsBySubject = (req: Request, res: Response) => {
     const mediaSubjectGrades = somaMediasPorSubject / subjectsData.length;
 
     res.status(200).json({
-      message: "Requisição realizada com sucesso!",
+      message: "Requisição realizada com sucesso! Por favor, Atualize a página!",
       data: {
         mediaPorSubject,
         mediaSubjectGrades, // Média geral
